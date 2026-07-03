@@ -1,7 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import {
   Star,
   X,
@@ -9,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import ReviewFormDialog from "./ui/review-dialog";
 
 const REVIEWS = [
   {
@@ -89,7 +95,14 @@ export default function Reviews() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const active = activeIndex !== null ? REVIEWS[activeIndex] : null;
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
 
   const scrollByCard = (dir: 1 | -1) => {
     const el = scrollerRef.current;
@@ -100,43 +113,26 @@ export default function Reviews() {
   };
 
   return (
-    <section id="reviews" className="pt-10  md:py-1 md:pt-0 pb-20">
+    <section
+      ref={sectionRef}
+      id="reviews"
+      className="relative overflow-hidden pt-20 pb-20 text-paper md:py-20"
+    >
+      {/* Background image */}
+      <div className="absolute inset-0 -z-20 bg-ink">
+        <motion.div
+          style={{ y: bgY }}
+          className="absolute inset-0 bg-[url('/office.jpg')] bg-cover bg-center bg-fixed"
+        />
+        <div className="absolute inset-0 bg-ink/75" />
+      </div>
+
       <div className="mx-auto max-w-6xl px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
-            <h2 className="mt-4 text-ink font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-paper sm:text-4xl">
               What Our Valued Clients Are Saying About Us
             </h2>
-          </div>
-
-          <div className="md:flex hidden items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setFormOpen(true)}
-              className="inline-flex shrink-0 items-center gap-2 rounded-2xl border px-4 py-2.5 text-sm font-medium text-paper transition-colors duration-200 border-accent/40 bg-accent/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-            >
-              <MessageSquarePlus className="h-3.5 w-3.5" />
-              Leave a Review
-            </button>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => scrollByCard(-1)}
-                aria-label="Previous reviews"
-                className="flex h-9 w-9 items-center justify-center rounded-2xl border border-accent bg-accent/10 text-paper/60 transition-colors duration-200 hover:border-accent/40 hover:text-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollByCard(1)}
-                aria-label="Next reviews"
-                className="flex h-9 w-9 items-center justify-center rounded-2xl border border-accent bg-accent/10 text-paper/60 transition-colors duration-200 hover:border-accent/40 hover:text-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
           </div>
         </div>
 
@@ -156,17 +152,17 @@ export default function Reviews() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.4, delay: i * 0.06 }}
-                className="group flex w-80 bg-mist shrink-0 snap-start flex-col appearance-none rounded-2xl border border-paper/10 bg-paper/[0.04] p-7 text-left shadow-sm transition-shadow duration-300 ease-out hover:shadow-md hover:shadow-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                className="group flex w-80 shrink-0 snap-start flex-col appearance-none rounded-2xl border border-paper/15 bg-paper/10 p-7 text-left backdrop-blur-md transition-shadow duration-300 ease-out hover:shadow-lg hover:shadow-black/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               >
-                <p className="line-clamp-3 text-xs leading-relaxed text-neutral-600 md:text-sm">
+                <p className="line-clamp-3 text-xs leading-relaxed text-paper/85 md:text-sm">
                   {review.quote}
                 </p>
 
-                <div className="mt-5 border-t border-neutral-200 pt-5 md:mt-6 md:pt-6">
-                  <p className="font-display md:text-base text-sm text-black">
+                <div className="mt-5 border-t border-paper/15 pt-5 md:mt-6 md:pt-6">
+                  <p className="font-display text-sm text-paper md:text-base">
                     {review.name}
                   </p>
-                  <p className="text-xs text-neutral-500">{review.role}</p>
+                  <p className="text-xs text-paper/60">{review.role}</p>
                 </div>
 
                 <div className="mt-3 flex gap-0.5 text-yellow-400">
@@ -182,11 +178,11 @@ export default function Reviews() {
             ))}
           </div>
         </div>
-        <div className="flex md:hidden pt-5 items-center gap-3">
+        <div className="flex justify-between md:pt-6  items-center gap-3">
           <button
             type="button"
             onClick={() => setFormOpen(true)}
-            className="inline-flex shrink-0 items-center gap-2 rounded-2xl border px-4 py-2.5 text-sm font-medium text-paper transition-colors duration-200 border-accent/40 bg-accent/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="inline-flex shrink-0 items-center gap-2 rounded-2xl border border-paper/15 bg-paper/10 px-4 py-2.5 text-sm font-medium text-paper backdrop-blur-md transition-colors duration-200 hover:border-paper/30 hover:bg-paper/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             <MessageSquarePlus className="h-3.5 w-3.5" />
             Leave a Review
@@ -197,7 +193,7 @@ export default function Reviews() {
               type="button"
               onClick={() => scrollByCard(-1)}
               aria-label="Previous reviews"
-              className="flex h-9 w-9 items-center justify-center rounded-2xl border border-accent bg-accent/10 text-paper/60 transition-colors duration-200 hover:border-accent/40 hover:text-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              className="flex h-9 w-9 items-center justify-center rounded-2xl border border-paper/15 bg-paper/10 text-paper/60 backdrop-blur-md transition-colors duration-200 hover:border-paper/30 hover:bg-paper/15 hover:text-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -205,7 +201,7 @@ export default function Reviews() {
               type="button"
               onClick={() => scrollByCard(1)}
               aria-label="Next reviews"
-              className="flex h-9 w-9 items-center justify-center rounded-2xl border border-accent bg-accent/10 text-paper/60 transition-colors duration-200 hover:border-accent/40 hover:text-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              className="flex h-9 w-9 items-center justify-center rounded-2xl border border-paper/15 bg-paper/10 text-paper/60 backdrop-blur-md transition-colors duration-200 hover:border-paper/30 hover:bg-paper/15 hover:text-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -224,7 +220,7 @@ export default function Reviews() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
               onClick={() => setActiveIndex(null)}
-              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
             />
 
             <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
@@ -236,12 +232,12 @@ export default function Reviews() {
                   damping: 36,
                   mass: 0.7,
                 }}
-                className="relative w-full max-w-lg rounded-2xl border border-paper/10 bg-ink p-8 shadow-lg shadow-black/10"
+                className="relative w-full max-w-lg rounded-2xl border border-paper/15 bg-ink/90 p-8 shadow-lg shadow-black/20 backdrop-blur-xl"
               >
                 <button
                   type="button"
                   onClick={() => setActiveIndex(null)}
-                  className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-2xl text-paper/60 transition-colors duration-200 hover:bg-paper/5 hover:text-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                  className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-2xl text-paper/60 transition-colors duration-200 hover:bg-paper/10 hover:text-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                   aria-label="Close"
                 >
                   <X className="h-4 w-4" />
@@ -266,11 +262,11 @@ export default function Reviews() {
                     {active.quote}
                   </p>
 
-                  <div className="mt-7 border-t border-paper/10 pt-5">
+                  <div className="mt-7 border-t border-paper/15 pt-5">
                     <p className="text-sm font-semibold text-paper">
                       {active.name}
                     </p>
-                    <p className="text-xs text-paper/50">{active.role}</p>
+                    <p className="text-xs text-paper/60">{active.role}</p>
                   </div>
                 </motion.div>
               </motion.div>
@@ -280,6 +276,16 @@ export default function Reviews() {
       </AnimatePresence>
 
       {/* Leave a review dialog */}
+
+      {/* Leave a review dialog */}
+      <ReviewFormDialog
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        onSubmit={async (data) => {
+          console.log("Review submitted:", data);
+          // wire up your actual submit endpoint here later
+        }}
+      />
     </section>
   );
 }

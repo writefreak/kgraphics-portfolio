@@ -84,7 +84,7 @@ export default function Portfolio() {
   };
 
   return (
-    <section id="portfolio" className="py-24 md:py-32">
+    <section id="portfolio" className="pb-32 pt-16 md:py-32">
       <Container>
         <motion.div
           initial="hidden"
@@ -104,7 +104,8 @@ export default function Portfolio() {
               variants={fadeUp}
               className="mt-4 text-xs md:text-sm text-ink/65"
             >
-              A selection of our most recent projects each reflecting our <br />
+              A selection of our most recent projects each reflecting our{" "}
+              <br className="hidden md:block" />
               commitment to delivering top-notch solutions
             </motion.p>
           </div>

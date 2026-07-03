@@ -121,29 +121,29 @@ export default function Hero() {
             style={{ transformStyle: "preserve-3d" }}
             className="relative w-full h-full"
           >
-            {/* Front */}
-            <div
-              className="absolute inset-0 rounded-2xl bg-[#030142] flex flex-col items-center justify-center gap-4 px-8"
-              style={{ backfaceVisibility: "hidden" }}
-            >
-              <h2 className="text-white font-display text-2xl md:text-3xl font-black text-center leading-tight">
-                Hello, I'm Oluwakemisola
-              </h2>
-            </div>
-
-            {/* Back — photo */}
+            {/* Front — photo */}
             <div
               className="absolute inset-0 rounded-2xl overflow-hidden"
-              style={{
-                backfaceVisibility: "hidden",
-                transform: "rotateY(180deg)",
-              }}
+              style={{ backfaceVisibility: "hidden" }}
             >
               <img
                 src="/kemi.jpeg"
                 alt=""
                 className="h-full w-full object-cover rounded-2xl"
               />
+            </div>
+
+            {/* Back */}
+            <div
+              className="absolute inset-0 rounded-2xl bg-[#030142] flex flex-col items-center justify-center gap-4 px-8"
+              style={{
+                backfaceVisibility: "hidden",
+                transform: "rotateY(180deg)",
+              }}
+            >
+              <h2 className="text-white font-display text-2xl md:text-3xl font-black text-center leading-tight">
+                Hello, I'm Oluwakemisola
+              </h2>
             </div>
           </motion.div>
         </div>

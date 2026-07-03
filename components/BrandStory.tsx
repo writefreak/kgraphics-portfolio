@@ -14,39 +14,36 @@ export default function BrandStory() {
           whileInView="visible"
           viewport={viewportOnce}
           variants={stagger()}
-          className="grid items-center gap-12 rounded-3xl bg-mist p-10 md:grid-cols-2 md:p-16"
+          className="grid items-center gap-6 md:gap-12 rounded-3xl bg-mist p-6 md:grid-cols-2 md:p-16"
         >
-          <div>
-            <motion.div variants={fadeUp}>
-              <SectionLabel>Our Brand Story</SectionLabel>
-            </motion.div>
+          <div className="order-2 md:order-1">
             <motion.h2
               variants={fadeUp}
-              className="mt-4 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl"
+              className="mt-4 font-display text-xl tracking-tight text-ink sm:text-4xl"
             >
-              Get to know the passion, purpose, and vision behind every
-              piece we create.
+              Get to know the passion, purpose, and vision behind every piece we
+              create.
             </motion.h2>
-            <motion.div variants={fadeUp} className="mt-8">
+            <motion.div variants={fadeUp} className="md:pt-8 pt-5 md:pb-0 pb-4">
               <a
                 href="#"
-                className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-paper transition-colors hover:bg-accent"
+                className="inline-flex items-center gap-2 rounded-2xl bg-ink px-6 py-3.5 text-xs md:text-sm font-semibold text-paper transition-colors hover:bg-accent"
               >
                 <Download size={16} />
-                Download Story
+                Download Our Brand Story
               </a>
             </motion.div>
           </div>
 
           <motion.div
             variants={fadeUp}
-            className="relative h-64 overflow-hidden rounded-2xl bg-gradient-to-br from-ink to-accent md:h-80"
+            className="relative order-1 aspect-[16/9] w-full overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-ink to-accent md:order-2 md:aspect-auto md:h-80"
           >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-display text-6xl font-bold text-paper/15">
-                K
-              </span>
-            </div>
+            <img
+              src="/brand.jpeg"
+              alt="Brand Story"
+              className="h-full w-full object-cover"
+            />
           </motion.div>
         </motion.div>
       </Container>
