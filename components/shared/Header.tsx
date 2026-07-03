@@ -22,26 +22,26 @@ const links = [
 ];
 
 const Header = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  // const [isVisible, setIsVisible] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const scrollY = window.scrollY;
 
-      if (scrollY > 100) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-    };
+  //     if (scrollY > 100) {
+  //       setIsVisible(false);
+  //     } else {
+  //       setIsVisible(true);
+  //     }
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
+  //   window.addEventListener("scroll", handleScroll);
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
 
   const scrollToSection = (id: string) => {
     document
@@ -60,12 +60,10 @@ const Header = () => {
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-3 px-4 pt-5 md:px-14 md:pt-7 transition-opacity duration-300 ${
-        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-3 px-4 pt-5 md:px-14 md:pt-7 transition-opacity duration-300`}
     >
       {/* Desktop pill nav */}
-      <div className="hidden md:flex border border-gray-200 dark:border dark:border-white/10 not-dark:bg-white/80 dark:bg-white/5 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] dark:backdrop-blur-xl backdrop-blur-md shadow-md md:w-[800px] p-1 px-2 rounded-2xl items-center justify-between">
+      <div className="hidden md:flex border border-gray-200 dark:border dark:border-white/10 not-dark:bg-white/80 dark:bg-white/5 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] dark:backdrop-blur-xl backdrop-blur-md shadow-md md:w-[750px] p-1 px-2 rounded-2xl items-center justify-between">
         <Link href="/" className="h-12 w-12 pb-1">
           <img
             src="/kemilogo.png"
@@ -105,7 +103,7 @@ const Header = () => {
       </div>
 
       {/* Mobile bar */}
-      <div className="flex md:hidden w-full items-center justify-between border border-gray-200 dark:border dark:border-white/10 not-dark:bg-white/80 dark:bg-white/5 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] dark:backdrop-blur-xl backdrop-blur-md shadow-md p-2 pl-3 rounded-full">
+      <div className="flex md:hidden w-full items-center justify-between border border-gray-200 dark:border dark:border-white/10 not-dark:bg-white/80 dark:bg-white/5 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] dark:backdrop-blur-xl backdrop-blur-md shadow-md p-2 pl-3 rounded-2xl">
         <Link href="/" className="h-10 w-10">
           <img
             src="/kemilogo.png"
