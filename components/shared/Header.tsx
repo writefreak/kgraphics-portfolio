@@ -115,7 +115,7 @@ const Header = () => {
             <div key={index} className="group relative">
               <a
                 href={`#${l.desc.toLowerCase()}`}
-                onClick={(e) => {
+                onClick={(e: any) => {
                   e.preventDefault();
                   scrollToSection(l.desc);
                 }}
@@ -178,7 +178,7 @@ const Header = () => {
                     animate={{ x: 0 }}
                     exit={{ x: "100%" }}
                     transition={{ type: "spring", stiffness: 300, damping: 32 }}
-                    className="flex flex-1 flex-col items-center justify-center gap-8 px-6 bg-white dark:bg-[#030142]"
+                    className="flex flex-1 flex-col items-center justify-center gap-8 px-6"
                   >
                     <motion.div
                       initial="hidden"

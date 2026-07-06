@@ -152,7 +152,7 @@ export default function Reviews() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.4, delay: i * 0.06 }}
-                className="group flex w-80 shrink-0 snap-start flex-col appearance-none rounded-2xl border border-paper/15 bg-paper/10 p-7 text-left backdrop-blur-md transition-shadow duration-300 ease-out hover:shadow-lg hover:shadow-black/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                className="group flex w-74 md:w-80 shrink-0 snap-start flex-col appearance-none rounded-2xl border border-paper/15 bg-paper/10 p-7 text-left backdrop-blur-md transition-shadow duration-300 ease-out hover:shadow-lg hover:shadow-black/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               >
                 <p className="line-clamp-3 text-xs leading-relaxed text-paper/85 md:text-sm">
                   {review.quote}

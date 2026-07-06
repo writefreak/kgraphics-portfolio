@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import BackButton from "../ui/back-button";
 
 type PortfolioItem = {
   id: number;
@@ -137,6 +138,7 @@ const Content = () => {
   return (
     <main className="md:pt-40 pt-32 pb-32">
       <Container>
+        <BackButton className="mb-6" />
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-xl">
             <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">

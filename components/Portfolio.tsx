@@ -86,7 +86,6 @@ export default function Portfolio() {
 
   return (
     <section id="portfolio" className="pb-32 pt-16 md:pt-28 md:pb-40">
-      <BackButton />
       <Container>
         <motion.div
           initial="hidden"
