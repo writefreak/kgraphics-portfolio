@@ -40,7 +40,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden bg-ink pb-16 pt-0 sm:py-24 md:pb-28 md:pt-20"
+      className="relative overflow-hidden bg-ink pb-16 pt-15 sm:py-24 md:pb-28 md:pt-20"
     >
       <div
         aria-hidden
@@ -62,14 +62,16 @@ export default function Contact() {
                 variants={fadeUp}
                 className="font-display text-2xl font-bold tracking-tight text-paper sm:text-4xl md:text-5xl"
               >
-                Let&apos;s talk about what you&apos;re building.
+                Let&apos;s talk about what <br className="md:hidden" />{" "}
+                you&apos;re building.
               </motion.h2>
               <motion.p
                 variants={fadeUp}
-                className="mt-4 max-w-md text-sm text-paper/65 md:text-base"
+                className="mt-4 max-w-md md:text-sm text-paper/65 text-xs"
               >
-                Tell us about your brand, your event, or your idea, and
-                we&apos;ll bring it to life.
+                Tell us about your brand, your event,{" "}
+                <br className="md:hidden" /> or your idea, and we&apos;ll bring
+                it to life.
               </motion.p>
 
               <motion.ul

@@ -18,7 +18,6 @@ export default function Home() {
         <Portfolio />
         <Reviews />
         <BrandStory />
-        <Contact />
       </main>
     </>
   );

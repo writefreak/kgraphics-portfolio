@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 // import { ThemeSwitch } from "./ui/theme-switch";
 import { Menu } from "lucide-react";
 import {
@@ -21,9 +23,25 @@ const links = [
   { desc: "Portfolio" },
 ];
 
+const linkListVariants = {
+  visible: {
+    transition: { staggerChildren: 0.08, delayChildren: 0.15 },
+  },
+  hidden: {
+    transition: { staggerChildren: 0.04, staggerDirection: -1 },
+  },
+};
+
+const linkItemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const Header = () => {
   // const [isVisible, setIsVisible] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   // useEffect(() => {
   //   const handleScroll = () => {
@@ -43,10 +61,26 @@ const Header = () => {
   //   };
   // }, []);
 
+  // If we land on "/" with a hash (e.g. redirected from another page), scroll to it
+  useEffect(() => {
+    if (pathname === "/" && window.location.hash) {
+      const id = window.location.hash.replace("#", "");
+      requestAnimationFrame(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      });
+    }
+  }, [pathname]);
+
   const scrollToSection = (id: string) => {
-    document
-      .getElementById(id.toLowerCase())
-      ?.scrollIntoView({ behavior: "smooth" });
+    const sectionId = id.toLowerCase();
+
+    if (pathname === "/") {
+      document
+        .getElementById(sectionId)
+        ?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      router.push(`/#${sectionId}`);
+    }
   };
 
   const handleClick = () => {
@@ -129,40 +163,70 @@ const Header = () => {
               </button>
             </SheetTrigger>
             <SheetContent
+              forceMount
               side="right"
-              className="w-screen h-screen max-w-none sm:max-w-none bg-white dark:bg-[#030142] border-none p-0 flex flex-col"
+              className="w-screen h-screen max-w-none sm:max-w-none bg-white dark:bg-[#030142] border-none p-0 flex flex-col overflow-hidden"
             >
               <SheetHeader className="sr-only">
                 <SheetTitle>Navigation</SheetTitle>
               </SheetHeader>
 
-              <div className="flex flex-1 flex-col items-center justify-center gap-8 px-6">
-                {links.map((l, index) => (
-                  <SheetClose asChild key={index}>
-                    <a
-                      href={`#${l.desc.toLowerCase()}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setMobileOpen(false);
-                        scrollToSection(l.desc);
-                      }}
-                      className="font-montserrat text-2xl font-medium text-neutral-800 dark:text-white/80 hover:text-[#030142] dark:hover:text-white cursor-pointer transition-colors duration-200"
+              <AnimatePresence>
+                {mobileOpen && (
+                  <motion.div
+                    initial={{ x: "100%" }}
+                    animate={{ x: 0 }}
+                    exit={{ x: "100%" }}
+                    transition={{ type: "spring", stiffness: 300, damping: 32 }}
+                    className="flex flex-1 flex-col items-center justify-center gap-8 px-6 bg-white dark:bg-[#030142]"
+                  >
+                    <motion.div
+                      initial="hidden"
+                      animate="visible"
+                      exit="hidden"
+                      variants={linkListVariants}
+                      className="flex flex-col items-center gap-8"
                     >
-                      {l.desc}
-                    </a>
-                  </SheetClose>
-                ))}
+                      {links.map((l, index) => (
+                        <motion.div
+                          key={index}
+                          variants={linkItemVariants}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <SheetClose asChild>
+                            <a
+                              href={`#${l.desc.toLowerCase()}`}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setMobileOpen(false);
+                                scrollToSection(l.desc);
+                              }}
+                              className="font-montserrat text-2xl font-medium text-neutral-800 dark:text-white/80 hover:text-[#030142] dark:hover:text-white cursor-pointer transition-colors duration-200"
+                            >
+                              {l.desc}
+                            </a>
+                          </SheetClose>
+                        </motion.div>
+                      ))}
 
-                <button
-                  onClick={() => {
-                    setMobileOpen(false);
-                    handleClick();
-                  }}
-                  className={`bg-transparent rounded-2xl text-[#030142] border-2 hover:bg-[#030142] mt-4 px-8 py-5 text-base`}
-                >
-                  Let's Connect
-                </button>
-              </div>
+                      <motion.div
+                        variants={linkItemVariants}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <button
+                          onClick={() => {
+                            setMobileOpen(false);
+                            handleClick();
+                          }}
+                          className="rounded-2xl py-3 px-6 text-white text-sm bg-[#030142] hover:bg-[#030142] hover:-translate-y-1 hover:text-white transition-all duration-500 dark:text-white/80 dark:border-0 dark:bg-[#498cff] dark:hover:bg-white/10 dark:hover:text-white dark:hover:border-white/60"
+                        >
+                          Let's Connect
+                        </button>
+                      </motion.div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </SheetContent>
           </Sheet>
         </div>

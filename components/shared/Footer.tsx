@@ -21,8 +21,8 @@ const FOOTER_COLUMNS = [
   {
     title: "Policies",
     links: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms-of-service" },
     ],
   },
 ];
@@ -85,7 +85,7 @@ export function Footer() {
           {/* Brand / contact column */}
           <div className="flex flex-col gap-5">
             <div className="flex items-center gap-2.5">
-              <a href="#top" className="h-9 md:h-12">
+              <a href="/" className="h-9 md:h-12">
                 <img
                   src="/kemilogo.png"
                   alt=""

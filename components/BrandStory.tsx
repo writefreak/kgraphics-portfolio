@@ -19,7 +19,7 @@ export default function BrandStory() {
           <div className="order-2 md:order-1">
             <motion.h2
               variants={fadeUp}
-              className="mt-4 font-display text-xl tracking-tight text-ink sm:text-4xl"
+              className="mt-4 font-display text-[18.5px] tracking-tight text-ink/60 sm:text-4xl"
             >
               Get to know the passion, purpose, and vision behind every piece we
               create.

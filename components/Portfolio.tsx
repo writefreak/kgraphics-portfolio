@@ -12,6 +12,7 @@ import { useRef, useState } from "react";
 import { Container, SectionLabel } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
+import BackButton from "./ui/back-button";
 
 const IMAGES = [
   { id: "1", src: "/1.jpg" },
@@ -85,6 +86,7 @@ export default function Portfolio() {
 
   return (
     <section id="portfolio" className="pb-32 pt-16 md:pt-28 md:pb-40">
+      <BackButton />
       <Container>
         <motion.div
           initial="hidden"
@@ -152,7 +154,7 @@ export default function Portfolio() {
                 <DialogTrigger asChild key={`${image.id}-${i}`}>
                   <div
                     onClick={() => setSelectedImage(image.src)}
-                    className="group relative aspect-[4/5] w-[220px] flex-shrink-0 cursor-pointer overflow-hidden rounded-2xl sm:w-[280px] md:w-[320px]"
+                    className="group relative aspect-4/6 md:aspect-4/5 w-[220px] flex-shrink-0 cursor-pointer overflow-hidden rounded-2xl sm:w-[280px] md:w-[320px]"
                   >
                     <img
                       src={image.src}
