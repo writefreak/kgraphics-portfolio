@@ -19,24 +19,6 @@ interface GalleryCarouselProps {
 
 const VISIBLE_RANGE = 2;
 
-const GALLERY_ITEMS: GalleryItem[] = [
-  { id: 1, src: "/1.jpg", alt: "Bolu Couture Flyer Design" },
-  { id: 2, src: "/2.jpg", alt: "Jiggy's Glam Social Media Set" },
-  { id: 3, src: "/3.jpg", alt: "Why Wait Promo Post" },
-  { id: 4, src: "/4.jpg", alt: "Happy Valentine's Day Post" },
-  { id: 5, src: "/5.jpg", alt: "Morara Hair Therapy Business Flyer" },
-  { id: 6, src: "/6.jpg", alt: "Global Innovation Hub Brand Identity" },
-  { id: 7, src: "/7.jpg", alt: "TalkWithChi Ladies Hangout Flyer" },
-  { id: 8, src: "/8.jpg", alt: "Olaoye2026 Save The Date Flyer" },
-  { id: 9, src: "/9.jpg", alt: "Morara Hair Therapy Product Packaging" },
-  { id: 10, src: "/10.jpg", alt: "Roged Exchange Flyer" },
-  { id: 11, src: "/11.jpg", alt: "David Anthony Birthday Flyer" },
-  { id: 12, src: "/12.jpg", alt: "StyledByKennyl Business Flyer" },
-  { id: 13, src: "/13.jpg", alt: "Beauty J Empire Flyer" },
-  { id: 14, src: "/14.jpg", alt: "Smadecable Brand Identity" },
-  { id: 15, src: "/15.jpg", alt: "Gem Fashion Brand Identity" },
-];
-
 export default function DesktopGallery({
   items = GALLERY_ITEMS,
 }: Partial<GalleryCarouselProps>) {

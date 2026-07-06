@@ -105,7 +105,7 @@ export default function page() {
           </div>
         </div>
 
-        <PortfolioFeed items={PORTFOLIO_ITEMS} />
+        <PortfolioFeed items={GALLERY_ITEMS} />
       </main>
     </>
   );
