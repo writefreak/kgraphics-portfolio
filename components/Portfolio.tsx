@@ -84,7 +84,7 @@ export default function Portfolio() {
   };
 
   return (
-    <section id="portfolio" className="pb-32 pt-16 md:py-32">
+    <section id="portfolio" className="pb-32 pt-16 md:pt-28 md:pb-40">
       <Container>
         <motion.div
           initial="hidden"
@@ -174,14 +174,14 @@ export default function Portfolio() {
             <button
               onClick={() => nudge(-1)}
               aria-label="Scroll left"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
+              className="flex md:h-10 md:w-10 h-9 w-9 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
             >
               <ChevronLeft size={18} />
             </button>
             <button
               onClick={() => nudge(1)}
               aria-label="Scroll right"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
+              className="flex md:h-10 md:w-10 h-9 w-9 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
             >
               <ChevronRight size={18} />
             </button>

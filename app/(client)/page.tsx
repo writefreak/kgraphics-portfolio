@@ -6,12 +6,11 @@ import Portfolio from "@/components/Portfolio";
 import Reviews from "@/components/Reviews";
 import BrandStory from "@/components/BrandStory";
 import Contact from "@/components/Contact";
-import Footer from "@/components/shared/Footer";
+import { Footer } from "@/components/shared/Footer";
 
 export default function Home() {
   return (
     <>
-      <Header />
       <main>
         <Hero />
         <Services />
@@ -21,7 +20,6 @@ export default function Home() {
         <BrandStory />
         <Contact />
       </main>
-      <Footer />
     </>
   );
 }

@@ -7,14 +7,14 @@ import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 
 export default function BrandStory() {
   return (
-    <section className="py-24 md:py-32">
+    <section className="py-28 md:py-40">
       <Container>
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
           variants={stagger()}
-          className="grid items-center gap-6 md:gap-12 rounded-3xl bg-mist p-6 md:grid-cols-2 md:p-16"
+          className="grid items-center gap-6 md:gap-12 rounded-3xl bg-mist p-6 md:grid-cols-2 md:p-14"
         >
           <div className="order-2 md:order-1">
             <motion.h2
