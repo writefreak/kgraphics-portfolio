@@ -39,11 +39,6 @@ const WorkCard = ({ item, className, onClick }: WorkCardProps) => {
             {item.name}
           </h2>
           <p className="text-xs  text-white/80 line-clamp-2">{item.desc}</p>
-          {/* <div className="mb-3 flex items-center justify-between">
-            <div className="flex h-7 w-7 shrink-0 translate-y-1 items-center justify-center rounded-full border border-white/20 bg-white/15 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-              <ArrowUpRight size={13} color="white" />
-            </div>
-          </div> */}
         </div>
       </div>
     </article>

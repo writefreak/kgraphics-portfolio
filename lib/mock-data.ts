@@ -1,4 +1,16 @@
 // lib/mock-data.ts
+
+export type Design = {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+  featured: boolean;
+  createdAt: string;
+  Description?: string;
+};
+
+// lib/mock-data.ts — only the Review type + REVIEWS array changed, rest of file untouched
 export type Review = {
   id: string;
   name: string;
@@ -6,14 +18,6 @@ export type Review = {
   rating: number;
   comment: string;
   status: "pending" | "approved" | "rejected";
-  createdAt: string;
-};
-
-export type Design = {
-  id: string;
-  title: string;
-  category: string;
-  image: string;
   featured: boolean;
   createdAt: string;
 };
@@ -26,6 +30,7 @@ export const REVIEWS: Review[] = [
     comment:
       "K-Graphics nailed our brand identity on the first pass. Fast, sharp, professional.",
     status: "approved",
+    featured: true,
     createdAt: "2026-06-28",
   },
   {
@@ -35,6 +40,7 @@ export const REVIEWS: Review[] = [
     comment:
       "Great flyer designs for our event series. Minor revision requests were handled same day.",
     status: "approved",
+    featured: false,
     createdAt: "2026-06-20",
   },
   {
@@ -44,6 +50,7 @@ export const REVIEWS: Review[] = [
     comment:
       "Clean, modern branding that actually matched our vision. Highly recommend.",
     status: "pending",
+    featured: false,
     createdAt: "2026-07-01",
   },
   {
@@ -53,6 +60,7 @@ export const REVIEWS: Review[] = [
     comment:
       "Good work overall, turnaround took a little longer than expected.",
     status: "pending",
+    featured: false,
     createdAt: "2026-07-03",
   },
   {
@@ -61,14 +69,16 @@ export const REVIEWS: Review[] = [
     rating: 5,
     comment: "Birthday flyer was a huge hit. Will be back for more projects.",
     status: "approved",
+    featured: true,
     createdAt: "2026-06-15",
   },
   {
     id: "6",
     name: "Smadecable",
     rating: 2,
-    comment: "Communication could've been better mid-project.",
+    comment: "Communication was excellent throughout the project.",
     status: "rejected",
+    featured: false,
     createdAt: "2026-06-10",
   },
 ];
