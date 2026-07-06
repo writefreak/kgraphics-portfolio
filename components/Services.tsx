@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Container } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
-import Card, { CardItem } from "./ui/card";
+import Card, { CardItem } from "./ui/work-card";
 
 const SERVICES: CardItem[] = [
   {
