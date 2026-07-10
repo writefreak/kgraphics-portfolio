@@ -2,11 +2,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Plus, Upload, X, ImageIcon } from "lucide-react";
+import { Plus, Upload, X, ImageIcon, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Design } from "@/lib/types";
+import { createDesign } from "@/app/(admin)/designs/actions";
 
 interface AddDesignDialogProps {
   onAdd: (design: Design) => void;
@@ -26,7 +27,12 @@ export function AddDesignDialog({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [desc, setDesc] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [behanceUrl, setBehanceUrl] = useState("");
   const [dragActive, setDragActive] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const reset = () => {
@@ -37,13 +43,14 @@ export function AddDesignDialog({
     setImageFile(null);
     setImagePreview(null);
     setDesc("");
+    setClientName("");
+    setBehanceUrl("");
     setDragActive(false);
+    setError(null);
   };
 
   const close = () => setOpen(false);
 
-  // Handle mount/unmount so the exit transition plays instead of the panel
-  // just vanishing, and lock body scroll while open.
   useEffect(() => {
     if (open) {
       setMounted(true);
@@ -70,6 +77,12 @@ export function AddDesignDialog({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
+  useEffect(() => {
+    if (!showSuccess) return;
+    const timeout = setTimeout(() => setShowSuccess(false), 3000);
+    return () => clearTimeout(timeout);
+  }, [showSuccess]);
+
   const handleFileSelect = (file: File | null) => {
     if (file && !file.type.startsWith("image/")) return;
     setImageFile(file);
@@ -84,28 +97,32 @@ export function AddDesignDialog({
   };
 
   const finalCategory = addingCustom ? customCategory.trim() : category.trim();
-  const canSubmit = title.trim() && imageFile && finalCategory;
+  const canSubmit = title.trim() && imageFile && finalCategory && !submitting;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!canSubmit || !imageFile) return;
 
-    // NOTE: local blob URL for preview only — swap for the returned storage
-    // URL once a real upload endpoint exists.
-    onAdd({
-      id: crypto.randomUUID(),
-      title: title.trim(),
-      category: finalCategory,
-      imageUrl: imagePreview!,
-      imageAlt: title.trim(),
-      caption: desc.trim() || null,
-      clientName: null,
-      behanceUrl: null,
-      featured: false,
-      displayOrder: 0,
-      createdAt: new Date(),
-    });
+    setSubmitting(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append("image", imageFile);
+      formData.append("title", title.trim());
+      formData.append("category", finalCategory);
+      formData.append("caption", desc.trim());
+      formData.append("clientName", clientName.trim());
+      formData.append("behanceUrl", behanceUrl.trim());
 
-    close();
+      const design = await createDesign(formData);
+      onAdd(design);
+      close();
+      setShowSuccess(true);
+    } catch (err) {
+      console.error(err);
+      setError("Couldn't add that design. Try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -117,6 +134,13 @@ export function AddDesignDialog({
         <Plus size={16} />
         Add Design
       </button>
+
+      {showSuccess && (
+        <div className="fixed top-5 right-5 z-[60] flex items-center gap-2 rounded-2xl bg-ink px-4 py-3 text-sm font-medium text-paper shadow-lg animate-in fade-in slide-in-from-top-2">
+          <Check size={16} className="text-emerald-400" />
+          Design added successfully
+        </div>
+      )}
 
       {mounted && (
         <div className="fixed inset-0 z-50">
@@ -165,6 +189,12 @@ export function AddDesignDialog({
             </div>
 
             <div className="flex-1 overflow-y-auto px-6 py-6">
+              {error && (
+                <div className="mb-6 rounded-card bg-red-50 border border-red-200 px-4 py-2 text-xs md:text-sm text-red-600">
+                  {error}
+                </div>
+              )}
+
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
                 {/* Image upload */}
                 <div className="flex flex-col gap-2">
@@ -302,6 +332,35 @@ export function AddDesignDialog({
                     )}
                   </div>
 
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-sm font-medium text-ink">
+                        Client name{" "}
+                        <span className="text-ink/40">(optional)</span>
+                      </label>
+                      <Input
+                        placeholder="e.g. Acme Inc."
+                        value={clientName}
+                        onChange={(e) => setClientName(e.target.value)}
+                        className="h-11"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <label className="text-sm font-medium text-ink">
+                        Behance URL{" "}
+                        <span className="text-ink/40">(optional)</span>
+                      </label>
+                      <Input
+                        type="url"
+                        placeholder="https://behance.net/gallery/..."
+                        value={behanceUrl}
+                        onChange={(e) => setBehanceUrl(e.target.value)}
+                        className="h-11"
+                      />
+                    </div>
+                  </div>
+
                   <div className="flex flex-1 flex-col gap-2">
                     <label className="text-sm font-medium text-ink">
                       Description
@@ -319,7 +378,7 @@ export function AddDesignDialog({
             </div>
 
             <div className="flex shrink-0 justify-end gap-2 border-t border-line px-6 py-4">
-              <Button variant="ghost" onClick={close}>
+              <Button variant="ghost" onClick={close} disabled={submitting}>
                 Cancel
               </Button>
               <Button
@@ -327,7 +386,7 @@ export function AddDesignDialog({
                 disabled={!canSubmit}
                 className="bg-ink text-paper hover:bg-ink/90"
               >
-                Add Design
+                {submitting ? "Adding..." : "Add Design"}
               </Button>
             </div>
           </div>

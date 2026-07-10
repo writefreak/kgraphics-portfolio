@@ -25,11 +25,8 @@ export function DesignsPageClient({ initialDesigns }: DesignsPageClientProps) {
   const [error, setError] = useState<string | null>(null);
 
   const categories = useMemo(
-    () => [
-      "All",
-      ...Array.from(new Set(initialDesigns.map((d) => d.category))),
-    ],
-    [initialDesigns],
+    () => ["All", ...Array.from(new Set(designs.map((d) => d.category)))],
+    [designs],
   );
 
   const filtered = useMemo(
