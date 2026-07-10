@@ -1,0 +1,373 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Upload, X, ImageIcon, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import type { Design } from "@/lib/types";
+import { updateDesign } from "@/app/(admin)/designs/actions";
+import { useRef } from "react";
+
+interface EditDesignDialogProps {
+  design: Design | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSave: (design: Design) => void;
+  existingCategories: string[];
+}
+
+export function EditDesignDialog({
+  design,
+  open,
+  onOpenChange,
+  onSave,
+  existingCategories,
+}: EditDesignDialogProps) {
+  const [mounted, setMounted] = useState(false);
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [customCategory, setCustomCategory] = useState("");
+  const [addingCustom, setAddingCustom] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [desc, setDesc] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [behanceUrl, setBehanceUrl] = useState("");
+  const [dragActive, setDragActive] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const close = () => onOpenChange(false);
+
+  // Prefill whenever a new design is opened for editing
+  useEffect(() => {
+    if (open && design) {
+      setTitle(design.title);
+      setCategory(design.category);
+      setCustomCategory("");
+      setAddingCustom(false);
+      setImageFile(null);
+      setImagePreview(design.imageUrl);
+      setDesc(design.caption ?? "");
+      setClientName(design.clientName ?? "");
+      setBehanceUrl(design.behanceUrl ?? "");
+      setError(null);
+    }
+  }, [open, design]);
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      const timeout = setTimeout(() => setMounted(false), 250);
+      return () => clearTimeout(timeout);
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
+  useEffect(() => {
+    if (!showSuccess) return;
+    const timeout = setTimeout(() => setShowSuccess(false), 3000);
+    return () => clearTimeout(timeout);
+  }, [showSuccess]);
+
+  const handleFileSelect = (file: File | null) => {
+    if (file && !file.type.startsWith("image/")) return;
+    setImageFile(file);
+    if (file) setImagePreview(URL.createObjectURL(file));
+    else setImagePreview(design?.imageUrl ?? null);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(false);
+    handleFileSelect(e.dataTransfer.files?.[0] ?? null);
+  };
+
+  const finalCategory = addingCustom ? customCategory.trim() : category.trim();
+  const canSubmit = title.trim() && finalCategory && !submitting && design;
+
+  const handleSubmit = async () => {
+    if (!canSubmit || !design) return;
+
+    setSubmitting(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      if (imageFile) formData.append("image", imageFile);
+      formData.append("title", title.trim());
+      formData.append("category", finalCategory);
+      formData.append("caption", desc.trim());
+      formData.append("clientName", clientName.trim());
+      formData.append("behanceUrl", behanceUrl.trim());
+
+      const updated = await updateDesign(design.id, formData);
+      onSave(updated);
+      close();
+      setShowSuccess(true);
+    } catch (err) {
+      console.error(err);
+      setError("Couldn't save those changes. Try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      {showSuccess && (
+        <div className="fixed top-5 right-5 z-[60] flex items-center gap-2 rounded-2xl bg-ink px-4 py-3 text-sm font-medium text-paper shadow-lg animate-in fade-in slide-in-from-top-2">
+          <Check size={16} className="text-emerald-400" />
+          Design updated successfully
+        </div>
+      )}
+
+      {mounted && (
+        <div className="fixed inset-0 z-50">
+          <div
+            onClick={close}
+            className={cn(
+              "absolute inset-0 bg-black/50 transition-opacity duration-250",
+              open ? "opacity-100" : "opacity-0",
+            )}
+            aria-hidden="true"
+          />
+
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-design-title"
+            className={cn(
+              "absolute inset-y-0 right-0 flex h-full w-full flex-col bg-paper shadow-2xl",
+              "sm:max-w-xl lg:max-w-3xl",
+              "transition-transform duration-250 ease-out",
+              open ? "translate-x-0" : "translate-x-full",
+            )}
+          >
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-line px-6 py-5">
+              <div>
+                <h2
+                  id="edit-design-title"
+                  className="font-display text-xl font-bold text-ink"
+                >
+                  Edit design
+                </h2>
+                <p className="mt-1 text-sm text-ink/60">
+                  Update details for this piece, or replace the image.
+                </p>
+              </div>
+              <button
+                onClick={close}
+                aria-label="Close"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink/50 hover:bg-mist hover:text-ink"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-6 py-6">
+              {error && (
+                <div className="mb-6 rounded-card bg-red-50 border border-red-200 px-4 py-2 text-xs md:text-sm text-red-600">
+                  {error}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
+                {/* Image */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium text-ink">Image</label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) =>
+                      handleFileSelect(e.target.files?.[0] ?? null)
+                    }
+                  />
+
+                  {imagePreview ? (
+                    <div
+                      className="group relative aspect-4/5 w-full overflow-hidden rounded-2xl border border-line shadow-sm"
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setDragActive(true);
+                      }}
+                      onDragLeave={() => setDragActive(false)}
+                      onDrop={handleDrop}
+                    >
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute inset-0 flex items-end justify-end gap-2 bg-gradient-to-t from-black/50 via-transparent to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink hover:bg-white"
+                          aria-label="Replace image"
+                        >
+                          <Upload size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex aspect-4/5 w-full flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-line text-ink/40 hover:border-ink/30 hover:bg-mist/50"
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-mist">
+                        <ImageIcon size={20} className="text-ink/40" />
+                      </div>
+                      <p className="text-sm font-medium text-ink/70">
+                        Click or drag to upload
+                      </p>
+                    </button>
+                  )}
+                  <p className="text-xs text-ink/40">
+                    Leave as-is to keep the current image.
+                  </p>
+                </div>
+
+                {/* Fields */}
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium text-ink">
+                      Title
+                    </label>
+                    <Input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="h-11"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium text-ink">
+                      Category
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {existingCategories.map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => {
+                            setCategory(c);
+                            setAddingCustom(false);
+                          }}
+                          className={cn(
+                            "rounded-full border px-3.5 py-2 text-xs font-medium transition-colors sm:text-sm",
+                            !addingCustom && category === c
+                              ? "border-ink bg-ink text-paper"
+                              : "border-line text-ink/60 hover:border-ink/40 hover:text-ink",
+                          )}
+                        >
+                          {c}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAddingCustom(true);
+                          setCategory("");
+                        }}
+                        className={cn(
+                          "rounded-full border px-3.5 py-2 text-xs font-medium transition-colors sm:text-sm",
+                          addingCustom
+                            ? "border-ink bg-ink text-paper"
+                            : "border-dashed border-line text-ink/60 hover:border-ink/40 hover:text-ink",
+                        )}
+                      >
+                        + Custom
+                      </button>
+                    </div>
+
+                    {addingCustom && (
+                      <Input
+                        autoFocus
+                        placeholder="New category name"
+                        value={customCategory}
+                        onChange={(e) => setCustomCategory(e.target.value)}
+                        className="mt-1 h-11"
+                      />
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-sm font-medium text-ink">
+                        Client name{" "}
+                        <span className="text-ink/40">(optional)</span>
+                      </label>
+                      <Input
+                        value={clientName}
+                        onChange={(e) => setClientName(e.target.value)}
+                        className="h-11"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <label className="text-sm font-medium text-ink">
+                        Behance URL{" "}
+                        <span className="text-ink/40">(optional)</span>
+                      </label>
+                      <Input
+                        type="url"
+                        value={behanceUrl}
+                        onChange={(e) => setBehanceUrl(e.target.value)}
+                        className="h-11"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-1 flex-col gap-2">
+                    <label className="text-sm font-medium text-ink">
+                      Description
+                    </label>
+                    <textarea
+                      value={desc}
+                      onChange={(e) => setDesc(e.target.value)}
+                      rows={6}
+                      className="flex-1 resize-none border border-ink rounded-2xl p-4"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 justify-end gap-2 border-t border-line px-6 py-4">
+              <Button variant="ghost" onClick={close} disabled={submitting}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={!canSubmit}
+                className="bg-ink text-paper hover:bg-ink/90"
+              >
+                {submitting ? "Saving..." : "Save changes"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

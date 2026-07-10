@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import type { Design } from "@/lib/types";
 import { AddDesignDialog } from "./add-design";
+import { EditDesignDialog } from "./edit-design-dialog";
 import { DesignDetailsDialog } from "./design-details-dialog";
 import { DesignCard } from "@/components/admin/design/design-card";
 import { deleteDesign, toggleFeatured } from "@/app/(admin)/designs/actions";
@@ -22,6 +23,7 @@ export function DesignsPageClient({ initialDesigns }: DesignsPageClientProps) {
   const [designs, setDesigns] = useState<Design[]>(initialDesigns);
   const [category, setCategory] = useState("All");
   const [selectedDesignId, setSelectedDesignId] = useState<string | null>(null);
+  const [editDesignId, setEditDesignId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const categories = useMemo(
@@ -42,8 +44,17 @@ export function DesignsPageClient({ initialDesigns }: DesignsPageClientProps) {
     [designs, selectedDesignId],
   );
 
+  const editDesign = useMemo(
+    () => designs.find((d) => d.id === editDesignId) ?? null,
+    [designs, editDesignId],
+  );
+
   const handleAdd = (design: Design) => {
     setDesigns((prev) => [design, ...prev]);
+  };
+
+  const handleUpdate = (design: Design) => {
+    setDesigns((prev) => prev.map((d) => (d.id === design.id ? design : d)));
   };
 
   const handleDelete = async (id: string) => {
@@ -78,8 +89,7 @@ export function DesignsPageClient({ initialDesigns }: DesignsPageClientProps) {
   };
 
   const handleEdit = (id: string) => {
-    // TODO: wire up an edit dialog once the API for updating a design exists
-    console.log("edit", id);
+    setEditDesignId(id);
   };
 
   return (
@@ -143,6 +153,16 @@ export function DesignsPageClient({ initialDesigns }: DesignsPageClientProps) {
         onOpenChange={(open) => {
           if (!open) setSelectedDesignId(null);
         }}
+      />
+
+      <EditDesignDialog
+        design={editDesign}
+        open={editDesignId !== null}
+        onOpenChange={(open) => {
+          if (!open) setEditDesignId(null);
+        }}
+        onSave={handleUpdate}
+        existingCategories={categories.filter((c) => c !== "All")}
       />
     </div>
   );
