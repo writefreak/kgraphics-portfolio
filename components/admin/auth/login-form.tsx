@@ -2,7 +2,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSignIn } from "@clerk/nextjs";
 import { Loader2 } from "lucide-react";
 import { TextField } from "./text-field";
 import { PasswordInput } from "./password-input";
@@ -17,10 +19,14 @@ interface FormState {
 type Errors = Partial<Record<keyof FormState, string>>;
 
 export function LoginForm() {
+  const router = useRouter();
+  const { signIn, errors: clerkErrors, fetchStatus } = useSignIn();
+
   const [values, setValues] = useState<FormState>({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
-  const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  const submitting = fetchStatus === "fetching";
 
   function validateField(
     field: keyof FormState,
@@ -48,6 +54,23 @@ export function LoginForm() {
     }
   }
 
+  async function finalizeSignIn() {
+    await signIn.finalize({
+      navigate: async ({ session, decorateUrl }) => {
+        if (session?.currentTask) {
+          // Session has a pending task (e.g. org selection) — send them there
+          return;
+        }
+        const url = decorateUrl("/dashboard");
+        if (url.startsWith("http")) {
+          window.location.href = url;
+        } else {
+          router.push(url);
+        }
+      },
+    });
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setFormError(null);
@@ -59,18 +82,26 @@ export function LoginForm() {
     setErrors(nextErrors);
     if (Object.values(nextErrors).some(Boolean)) return;
 
-    setSubmitting(true);
-    try {
-      // TODO: wire up to Supabase
-      // const { error } = await supabase.auth.signInWithPassword({
-      //   email: values.email,
-      //   password: values.password,
-      // });
-      // if (error) throw error;
-    } catch {
-      setFormError("Incorrect email or password.");
-    } finally {
-      setSubmitting(false);
+    const { error } = await signIn.password({
+      identifier: values.email,
+      password: values.password,
+    });
+
+    if (error) {
+      setFormError(error.longMessage ?? "Incorrect email or password.");
+      return;
+    }
+
+    if (signIn.status === "complete") {
+      await finalizeSignIn();
+    } else if (signIn.status === "needs_second_factor") {
+      setFormError("This account requires a second verification step.");
+    } else if (signIn.status === "needs_client_trust") {
+      setFormError(
+        "We don't recognize this device. Check your email to confirm it's you.",
+      );
+    } else {
+      setFormError("Additional verification required.");
     }
   }
 
@@ -104,7 +135,7 @@ export function LoginForm() {
             value={values.email}
             onChange={(v) => handleChange("email", v)}
             onBlur={() => handleBlur("email")}
-            error={errors.email}
+            error={errors.email ?? clerkErrors?.fields?.identifier?.message}
             placeholder="you@studio.com"
           />
 
@@ -116,7 +147,7 @@ export function LoginForm() {
               value={values.password}
               onChange={(v) => handleChange("password", v)}
               onBlur={() => handleBlur("password")}
-              error={errors.password}
+              error={errors.password ?? clerkErrors?.fields?.password?.message}
             />
             <div className="flex justify-end">
               <Link

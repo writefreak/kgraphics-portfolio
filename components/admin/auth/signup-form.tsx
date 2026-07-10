@@ -2,7 +2,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSignUp } from "@clerk/nextjs";
 import { Loader2 } from "lucide-react";
 import { TextField } from "./text-field";
 import { PasswordInput } from "./password-input";
@@ -17,14 +19,21 @@ interface FormState {
 type Errors = Partial<Record<keyof FormState, string>>;
 
 export function SignupForm() {
+  const router = useRouter();
+  const { signUp, errors: clerkErrors, fetchStatus } = useSignUp();
+
   const [values, setValues] = useState<FormState>({
     name: "",
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState<Errors>({});
-  const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [code, setCode] = useState("");
+
+  const submitting = fetchStatus === "fetching";
 
   function validateField(
     field: keyof FormState,
@@ -69,20 +78,89 @@ export function SignupForm() {
     setErrors(nextErrors);
     if (Object.values(nextErrors).some(Boolean)) return;
 
-    setSubmitting(true);
-    try {
-      // TODO: wire up to Supabase
-      // const { error } = await supabase.auth.signUp({
-      //   email: values.email,
-      //   password: values.password,
-      //   options: { data: { full_name: values.name } },
-      // });
-      // if (error) throw error;
-    } catch {
-      setFormError("Something went wrong. Try again.");
-    } finally {
-      setSubmitting(false);
+    const { error } = await signUp.password({
+      emailAddress: values.email,
+      password: values.password,
+      unsafeMetadata: { full_name: values.name },
+    });
+
+    if (error) {
+      setFormError(error.longMessage ?? "Something went wrong. Try again.");
+      return;
     }
+
+    await signUp.verifications.sendEmailCode();
+    setPendingVerification(true);
+  }
+
+  async function handleVerify(e: React.FormEvent) {
+    e.preventDefault();
+    setFormError(null);
+
+    const { error } = await signUp.verifications.verifyEmailCode({ code });
+
+    if (error) {
+      setFormError(error.longMessage ?? "Invalid or expired code.");
+      return;
+    }
+
+    if (signUp.status === "complete") {
+      await signUp.finalize({
+        navigate: async ({ decorateUrl }) => {
+          const url = decorateUrl("/dashboard");
+          if (url.startsWith("http")) {
+            window.location.href = url;
+          } else {
+            router.push(url);
+          }
+        },
+      });
+    } else {
+      setFormError("Verification incomplete. Check the code and try again.");
+    }
+  }
+
+  if (pendingVerification) {
+    return (
+      <div className="mx-auto w-full max-w-sm">
+        <div className="mb-8 space-y-1.5">
+          <h1 className="font-display text-2xl font-bold text-ink">
+            Check your email
+          </h1>
+          <p className="text-sm text-ink/60">
+            Enter the code we sent to {values.email}.
+          </p>
+        </div>
+
+        <form onSubmit={handleVerify} noValidate className="space-y-5">
+          {formError && (
+            <p
+              role="alert"
+              className="rounded-lg border border-destructive/30 bg-destructive/5 px-3.5 py-2.5 text-sm text-destructive"
+            >
+              {formError}
+            </p>
+          )}
+
+          <TextField
+            label="Verification code"
+            name="code"
+            value={code}
+            onChange={(v) => setCode(v)}
+            placeholder="123456"
+          />
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-ink px-4 py-2.5 text-sm font-medium text-paper transition-opacity hover:opacity-90 disabled:opacity-60"
+          >
+            {submitting && <Loader2 size={16} className="animate-spin" />}
+            {submitting ? "Verifying…" : "Verify email"}
+          </button>
+        </form>
+      </div>
+    );
   }
 
   return (
@@ -125,7 +203,7 @@ export function SignupForm() {
           value={values.email}
           onChange={(v) => handleChange("email", v)}
           onBlur={() => handleBlur("email")}
-          error={errors.email}
+          error={errors.email ?? clerkErrors?.fields?.emailAddress?.message}
           placeholder="you@studio.com"
         />
 
@@ -136,7 +214,7 @@ export function SignupForm() {
           value={values.password}
           onChange={(v) => handleChange("password", v)}
           onBlur={() => handleBlur("password")}
-          error={errors.password}
+          error={errors.password ?? clerkErrors?.fields?.password?.message}
           showStrength
         />
 

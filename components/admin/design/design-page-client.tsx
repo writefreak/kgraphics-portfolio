@@ -1,4 +1,3 @@
-// components/admin/designs/designs-page-client.tsx
 "use client";
 
 import { useMemo, useState } from "react";
@@ -9,10 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Design } from "@/lib/mock-data";
+import type { Design } from "@/lib/types";
 import { AddDesignDialog } from "./add-design";
 import { DesignDetailsDialog } from "./design-details-dialog";
 import { DesignCard } from "@/components/admin/design/design-card";
+import { deleteDesign, toggleFeatured } from "@/app/(admin)/designs/actions";
 
 interface DesignsPageClientProps {
   initialDesigns: Design[];
@@ -22,6 +22,7 @@ export function DesignsPageClient({ initialDesigns }: DesignsPageClientProps) {
   const [designs, setDesigns] = useState<Design[]>(initialDesigns);
   const [category, setCategory] = useState("All");
   const [selectedDesignId, setSelectedDesignId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const categories = useMemo(
     () => [
@@ -48,14 +49,35 @@ export function DesignsPageClient({ initialDesigns }: DesignsPageClientProps) {
     setDesigns((prev) => [design, ...prev]);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    const previous = designs;
     setDesigns((prev) => prev.filter((d) => d.id !== id));
+    setError(null);
+
+    try {
+      await deleteDesign(id);
+    } catch {
+      setDesigns(previous);
+      setError("Couldn't delete that design. Try again.");
+    }
   };
 
-  const handleToggleFeatured = (id: string) => {
+  const handleToggleFeatured = async (id: string) => {
+    const previous = designs;
+    const target = designs.find((d) => d.id === id);
+    if (!target) return;
+
     setDesigns((prev) =>
       prev.map((d) => (d.id === id ? { ...d, featured: !d.featured } : d)),
     );
+    setError(null);
+
+    try {
+      await toggleFeatured(id, !target.featured);
+    } catch {
+      setDesigns(previous);
+      setError("Couldn't update featured status. Try again.");
+    }
   };
 
   const handleEdit = (id: string) => {
@@ -67,7 +89,7 @@ export function DesignsPageClient({ initialDesigns }: DesignsPageClientProps) {
     <div className="space-y-6 md:pt-10 pt-5">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display md:text-xl  font-bold text-ink">
+          <h1 className="font-display md:text-xl font-bold text-ink">
             Your Designs
           </h1>
           <p className="mt-1 text-xs md:text-sm text-ink/60">
@@ -79,6 +101,12 @@ export function DesignsPageClient({ initialDesigns }: DesignsPageClientProps) {
           existingCategories={categories.filter((c) => c !== "All")}
         />
       </div>
+
+      {error && (
+        <div className="rounded-card bg-red-50 border border-red-200 px-4 py-2 text-xs md:text-sm text-red-600">
+          {error}
+        </div>
+      )}
 
       <Select value={category} onValueChange={setCategory}>
         <SelectTrigger className="w-[200px]">

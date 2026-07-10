@@ -1,0 +1,83 @@
+datasource db {
+  provider = "postgresql"
+}
+generator client {
+  provider = "prisma-client"
+  output   = "./generated"
+}
+model Category {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug         String   @unique
+  name         String
+  displayOrder Int      @default(0) @map("display_order")
+
+  designs         Design[]
+  analyticsEvents AnalyticsEvent[]
+
+  @@map("categories")
+}
+
+model Design {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String
+  categoryId  String?  @map("category_id") @db.Uuid
+  imagePath   String   @map("image_path")
+  imageAlt    String   @map("image_alt")
+  caption     String?
+  clientName  String?  @map("client_name")
+  behanceUrl  String?  @map("behance_url")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  displayOrder Int     @default(0) @map("display_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  category        Category?        @relation(fields: [categoryId], references: [id])
+  reviews         Review[]
+  analyticsEvents AnalyticsEvent[]
+
+  @@index([categoryId])
+  @@index([isFeatured])
+  @@map("designs")
+}
+
+model Review {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientName String   @map("client_name")
+  rating     Decimal  @db.Decimal(2, 1)
+  comment    String
+  status     String   @default("pending")
+  designId   String?  @map("design_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  design Design? @relation(fields: [designId], references: [id])
+
+  @@index([status])
+  @@index([designId])
+  @@map("reviews")
+}
+
+model AdminProfile {
+  id        String   @id
+  fullName  String   @map("full_name")
+  email     String
+  role      String   @default("admin")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("admin_profiles")
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventType  String   @map("event_type")
+  designId   String?  @map("design_id") @db.Uuid
+  categoryId String?  @map("category_id") @db.Uuid
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  design   Design?   @relation(fields: [designId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id])
+
+  @@index([designId])
+  @@index([categoryId])
+  @@index([createdAt])
+  @@map("analytics_events")
+}
