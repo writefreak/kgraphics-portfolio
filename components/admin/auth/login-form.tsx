@@ -159,6 +159,8 @@ export function LoginForm() {
             </div>
           </div>
 
+          <div id="clerk-captcha" />
+
           <button
             type="submit"
             disabled={submitting}

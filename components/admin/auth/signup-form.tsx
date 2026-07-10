@@ -149,7 +149,7 @@ export function SignupForm() {
             onChange={(v) => setCode(v)}
             placeholder="123456"
           />
-
+          <div id="clerk-captcha" />
           <button
             type="submit"
             disabled={submitting}
