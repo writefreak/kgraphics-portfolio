@@ -6,7 +6,7 @@ import { Plus, Upload, X, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import type { Design } from "@/lib/mock-data";
+import { Design } from "@/lib/types";
 
 interface AddDesignDialogProps {
   onAdd: (design: Design) => void;
@@ -95,10 +95,14 @@ export function AddDesignDialog({
       id: crypto.randomUUID(),
       title: title.trim(),
       category: finalCategory,
-      image: imagePreview!,
-      Description: desc.trim() || undefined,
+      imageUrl: imagePreview!,
+      imageAlt: title.trim(),
+      caption: desc.trim() || null,
+      clientName: null,
+      behanceUrl: null,
       featured: false,
-      createdAt: new Date().toISOString().slice(0, 10),
+      displayOrder: 0,
+      createdAt: new Date(),
     });
 
     close();

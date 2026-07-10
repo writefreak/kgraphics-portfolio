@@ -1,7 +1,7 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 export async function deleteDesign(id: string) {

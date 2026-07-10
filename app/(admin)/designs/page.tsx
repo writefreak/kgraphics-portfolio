@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 import type { Design } from "@/lib/types";
 
 export default async function DesignsPage() {
-  const rows = await prisma.designs.findMany({
+  const rows = await prisma.design.findMany({
     include: { category: true },
     orderBy: { displayOrder: "asc" },
   });
@@ -18,7 +18,7 @@ export default async function DesignsPage() {
       return {
         id: d.id,
         title: d.title,
-        category: d.category.name,
+        category: d.category?.name ?? "Uncategorized",
         imageUrl: data?.signedUrl ?? "",
         imageAlt: d.imageAlt,
         caption: d.caption,

@@ -1,4 +1,3 @@
-// components/admin/design/design-details-dialog.tsx
 "use client";
 
 import { Star, X } from "lucide-react";
@@ -8,8 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Design } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import type { Design } from "@/lib/types";
 
 interface DesignDetailsDialogProps {
   design: Design | null;
@@ -34,8 +33,8 @@ export function DesignDetailsDialog({
           <div className="flex-1 overflow-y-auto">
             <div className="relative w-full bg-black/5">
               <img
-                src={design.image}
-                alt={design.title}
+                src={design.imageUrl}
+                alt={design.imageAlt}
                 className="max-h-[55vh] w-full object-contain"
               />
             </div>
@@ -48,15 +47,15 @@ export function DesignDetailsDialog({
                 <p className="text-sm text-ink/60">{design.category}</p>
               </DialogHeader>
 
-              {design.Description && (
+              {design.caption && (
                 <p className="text-sm leading-relaxed text-ink/70">
-                  {design.Description}
+                  {design.caption}
                 </p>
               )}
 
               <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-ink/50">
                 {design.featured && (
-                  <span className=" flex items-center gap-1 rounded-full border border-amber-300/40 bg-amber-400/20 px-2.5 py-1 text-[11px] font-medium text-amber-500 backdrop-blur-md">
+                  <span className="flex items-center gap-1 rounded-full border border-amber-300/40 bg-amber-400/20 px-2.5 py-1 text-[11px] font-medium text-amber-500 backdrop-blur-md">
                     <Star size={12} className="fill-current" />
                     Featured
                   </span>

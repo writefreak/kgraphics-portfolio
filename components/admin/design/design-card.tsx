@@ -3,8 +3,8 @@
 
 import { Star, Trash2, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Design } from "@/lib/mock-data";
 import { ConfirmActionButton } from "@/components/ui/confirm-action";
+import { Design } from "@/lib/types";
 
 interface DesignCardProps {
   design: Design;
@@ -35,7 +35,7 @@ export function DesignCard({
       className="group relative aspect-4/5 w-full cursor-pointer overflow-hidden rounded-2xl shadow-md outline-none focus-visible:ring-2 focus-visible:ring-white/60"
     >
       <img
-        src={design.image}
+        src={design.imageUrl}
         alt={design.title}
         draggable={false}
         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"

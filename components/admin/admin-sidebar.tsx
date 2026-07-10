@@ -27,13 +27,13 @@ import {
 import { cn } from "@/lib/utils";
 
 const MENU = [
-  { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   {
     title: "User Reviews",
-    url: "/admin/user-reviews",
+    url: "/user-reviews",
     icon: MessageSquareText,
   },
-  { title: "Designs", url: "/admin/designs", icon: ImageIcon },
+  { title: "Designs", url: "/designs", icon: ImageIcon },
 ];
 
 const SIDEBAR_STYLE = {
@@ -185,7 +185,7 @@ export function AdminSidebar() {
   return (
     <Sidebar collapsible="icon" style={SIDEBAR_STYLE}>
       <SidebarHeader className="px-4 md:px-6 py-12">
-        <Link href="/admin/dashboard" className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <img
             src="/kemiwhite.png"
             alt="K-Graphics"
