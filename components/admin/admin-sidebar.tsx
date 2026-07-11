@@ -10,6 +10,7 @@ import {
   Image as ImageIcon,
   LogOut,
   X,
+  Loader2,
 } from "lucide-react";
 import {
   Sidebar,
@@ -25,6 +26,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { useClerk } from "@clerk/nextjs";
+import { ConfirmActionButton } from "../ui/confirm-action";
 
 const MENU = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -76,32 +79,51 @@ function MenuLink({
   );
 }
 
-function LogoutButton({ onLogout }: { onLogout: () => void }) {
+function LogoutButton({
+  onLogout,
+  loading,
+}: {
+  onLogout: () => void;
+  loading: boolean;
+}) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton
-          onClick={onLogout}
-          tooltip="Logout"
-          className="text-red-400/80 hover:!bg-red-500/10 hover:!text-red-400 [&_svg]:text-red-400/80 hover:[&_svg]:text-red-400 transition-colors duration-150"
-        >
-          <LogOut />
-          <span>Logout</span>
-        </SidebarMenuButton>
+        <ConfirmActionButton
+          onConfirm={onLogout}
+          title="Log out?"
+          description="You'll need to sign in again to access the admin panel."
+          confirmLabel={loading ? "Logging out…" : "Logout"}
+          destructive
+          ariaLabel="Logout"
+          className="w-full h-auto justify-start gap-2 rounded-md px-2 py-2 text-sm font-medium text-red-400/80 hover:!bg-red-500/10 hover:!text-red-400 [&_svg]:text-red-400/80 hover:[&_svg]:text-red-400 transition-colors duration-150 disabled:opacity-60"
+          icon={
+            <>
+              {loading ? <Loader2 className="animate-spin" /> : <LogOut />}
+              <span>{loading ? "Logging out…" : "Logout"}</span>
+            </>
+          }
+        />
       </SidebarMenuItem>
     </SidebarMenu>
   );
 }
 
 export function AdminSidebar() {
+  const { signOut } = useClerk();
+  const [loggingOut, setLoggingOut] = React.useState(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await signOut({ redirectUrl: "/login" });
+    } catch {
+      setLoggingOut(false);
+    }
+  };
   const pathname = usePathname();
   const router = useRouter();
   const { isMobile, openMobile, setOpenMobile } = useSidebar();
-
-  const handleLogout = () => {
-    // TODO: clear session/auth token here once auth is wired up
-    router.push("/login");
-  };
 
   const closeMobile = () => setOpenMobile(false);
 
@@ -175,7 +197,7 @@ export function AdminSidebar() {
           </div>
 
           <div className="px-4 pb-4">
-            <LogoutButton onLogout={handleLogout} />
+            <LogoutButton onLogout={handleLogout} loading={loggingOut} />
           </div>
         </div>
       </>
@@ -217,7 +239,7 @@ export function AdminSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="pb-4">
-        <LogoutButton onLogout={handleLogout} />
+        <LogoutButton onLogout={handleLogout} loading={loggingOut} />
       </SidebarFooter>
     </Sidebar>
   );
