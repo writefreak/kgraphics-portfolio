@@ -25,6 +25,7 @@ export default async function DashboardPage() {
     id: r.id,
     name: r.clientName,
     rating: Number(r.rating),
+    featured: r.featured,
     comment: r.comment,
     status: r.status as Review["status"],
     designId: r.designId,
