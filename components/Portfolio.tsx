@@ -13,20 +13,17 @@ import { Container, SectionLabel } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 import BackButton from "./ui/back-button";
-
-const IMAGES = [
-  { id: "1", src: "/1.jpg" },
-  { id: "2", src: "/2.jpg" },
-  { id: "3", src: "/3.jpg" },
-  { id: "4", src: "/4.jpg" },
-  { id: "5", src: "/5.jpg" },
-];
+import type { Design } from "@/lib/types";
 
 const SPEED = 30; // px per second — auto-scroll pace
 const RESUME_DELAY = 3000; // ms before auto-scroll resumes after a manual nudge
 const NUDGE_DURATION = 0.5; // seconds for the button-triggered slide
 
-export default function Portfolio() {
+interface PortfolioProps {
+  designs: Design[];
+}
+
+export default function Portfolio({ designs = [] }: PortfolioProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -35,11 +32,13 @@ export default function Portfolio() {
   const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nudgeAnimation = useRef<ReturnType<typeof animate> | null>(null);
 
-  // Duplicate once — animating x past -50% of scrollWidth loops seamlessly back to 0
-  const track = [...IMAGES, ...IMAGES];
+  // Fewer than 5 designs isn't enough to make an infinite marquee feel
+  // seamless — render the set once, statically, with no auto-scroll.
+  const shouldScroll = designs.length >= 5;
+  const track = shouldScroll ? [...designs, ...designs] : designs;
 
   useAnimationFrame((_, delta) => {
-    if (isPaused) return;
+    if (!shouldScroll || isPaused) return;
     const el = trackRef.current;
     if (!el) return;
 
@@ -56,6 +55,7 @@ export default function Portfolio() {
   };
 
   const nudge = (dir: 1 | -1) => {
+    if (!shouldScroll) return;
     const el = trackRef.current;
     if (!el) return;
 
@@ -149,15 +149,15 @@ export default function Portfolio() {
                 backfaceVisibility: "hidden",
               }}
             >
-              {track.map((image, i) => (
-                <DialogTrigger asChild key={`${image.id}-${i}`}>
-                  <div
-                    onClick={() => setSelectedImage(image.src)}
-                    className="group relative aspect-4/6 md:aspect-4/5 w-[220px] flex-shrink-0 cursor-pointer overflow-hidden rounded-2xl sm:w-[280px] md:w-[320px]"
-                  >
+              {track.map((design, i) => {
+                const cardClassName =
+                  "group relative aspect-4/6 md:aspect-4/5 w-[220px] flex-shrink-0 cursor-pointer overflow-hidden rounded-2xl sm:w-[280px] md:w-[320px]";
+
+                const cardInner = (
+                  <>
                     <img
-                      src={image.src}
-                      alt=""
+                      src={design.imageUrl}
+                      alt={design.imageAlt}
                       width={320}
                       height={400}
                       loading="eager"
@@ -165,28 +165,56 @@ export default function Portfolio() {
                       className="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-ink/0 transition-colors duration-300 [@media(hover:hover)]:group-hover:bg-ink/20" />
-                  </div>
-                </DialogTrigger>
-              ))}
+                  </>
+                );
+
+                // Cards linked to a Behance case study skip the lightbox and go straight there
+                if (design.behanceUrl) {
+                  return (
+                    <a
+                      key={`${design.id}-${i}`}
+                      href={design.behanceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cardClassName}
+                    >
+                      {cardInner}
+                    </a>
+                  );
+                }
+
+                return (
+                  <DialogTrigger asChild key={`${design.id}-${i}`}>
+                    <div
+                      onClick={() => setSelectedImage(design.imageUrl)}
+                      className={cardClassName}
+                    >
+                      {cardInner}
+                    </div>
+                  </DialogTrigger>
+                );
+              })}
             </motion.div>
           </motion.div>
 
-          <div className="mt-6 flex items-center gap-3 justify-end">
-            <button
-              onClick={() => nudge(-1)}
-              aria-label="Scroll left"
-              className="flex md:h-10 md:w-10 h-9 w-9 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              onClick={() => nudge(1)}
-              aria-label="Scroll right"
-              className="flex md:h-10 md:w-10 h-9 w-9 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
-            >
-              <ChevronRight size={18} />
-            </button>
-          </div>
+          {shouldScroll && (
+            <div className="mt-6 flex items-center gap-3 justify-end">
+              <button
+                onClick={() => nudge(-1)}
+                aria-label="Scroll left"
+                className="flex md:h-10 md:w-10 h-9 w-9 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={() => nudge(1)}
+                aria-label="Scroll right"
+                className="flex md:h-10 md:w-10 h-9 w-9 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          )}
 
           {selectedImage && (
             <DialogContent className="flex flex-col items-center border-none bg-transparent shadow-none">
