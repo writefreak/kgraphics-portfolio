@@ -18,6 +18,7 @@ export interface Review {
   rating: number;
   comment: string;
   status: "pending" | "approved" | "rejected";
+  featured: boolean;
   designId: string | null;
   createdAt: Date;
 }

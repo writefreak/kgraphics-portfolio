@@ -847,7 +847,9 @@ export type DesignScalarFieldEnum = (typeof DesignScalarFieldEnum)[keyof typeof 
 export const ReviewScalarFieldEnum = {
   id: 'id',
   clientName: 'clientName',
+  role: 'role',
   rating: 'rating',
+  featured: 'featured',
   comment: 'comment',
   status: 'status',
   designId: 'designId',

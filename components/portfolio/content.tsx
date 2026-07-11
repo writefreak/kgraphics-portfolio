@@ -111,7 +111,7 @@ const Content = ({ designs = [] }: ContentProps) => {
                     />
                     <div className="absolute inset-0 bg-ink/0 transition-colors duration-300 [@media(hover:hover)]:group-hover:bg-ink/20" />
                     <div className="absolute inset-0 flex flex-col justify-end">
-                      <div className="bg-black/60 p-6 flex flex-col gap-2 md:gap-3 text-white backdrop-blur-sm">
+                      <div className="bg-black/60 px-4 py-4 md:p-4 flex flex-col gap-1 md:gap-3 text-white backdrop-blur-sm">
                         <h2 className="font-display line-clamp-1 font-bold text-white leading-snug">
                           {item.title}
                         </h2>

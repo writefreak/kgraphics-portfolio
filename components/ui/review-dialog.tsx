@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Star, X } from "lucide-react";
+import { submitReview } from "@/app/(admin)/user-reviews/actions";
 
 type ReviewFormDialogProps = {
   open: boolean;
@@ -45,9 +46,21 @@ export default function ReviewFormDialog({
     e.preventDefault();
     if (!name || !quote) return;
     setSubmitting(true);
-    await onSubmit?.({ name, role, quote, rating });
-    setSubmitting(false);
-    setSubmitted(true);
+    try {
+      // Review model has no separate "role" column — fold it into the
+      // comment as a signature line rather than silently dropping it.
+      await submitReview({
+        name,
+        comment: role ? `${quote}\n\n— ${role}` : quote,
+        rating,
+      });
+      await onSubmit?.({ name, role, quote, rating });
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Failed to submit review:", err);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (

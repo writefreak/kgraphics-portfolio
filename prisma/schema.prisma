@@ -42,7 +42,9 @@ model Design {
 model Review {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   clientName String   @map("client_name")
+   role       String?  
   rating     Decimal  @db.Decimal(2, 1)
+  featured   Boolean  @default(false)
   comment    String
   status     String   @default("pending")
   designId   String?  @map("design_id") @db.Uuid

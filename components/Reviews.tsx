@@ -15,88 +15,93 @@ import {
   ChevronRight,
 } from "lucide-react";
 import ReviewFormDialog from "./ui/review-dialog";
+import type { Review } from "@/lib/types";
+import { submitReview } from "@/app/(admin)/user-reviews/actions";
 
-const REVIEWS = [
+// Fallback data used only when the table is empty, so the section never
+// renders blank. Not real client reviews — just here for visual continuity.
+const FALLBACK_REVIEWS = [
   {
     name: "Tobi A.",
-    role: "Founder, Aurelle Skincare",
     quote:
       "K-Graphics didn't just design a logo, she translated everything our brand stands for into something people remember.",
   },
   {
     name: "Pastor Daniel E.",
-    role: "Lumen Church Conference",
     quote:
       "Every poster felt intentional. There was a reverence in the work that matched the heart behind our event.",
   },
   {
     name: "Chiamaka O.",
-    role: "Naija Eats",
     quote:
       "Responsive, easy to work with, and the kind of designer who actually listens before she starts creating.",
   },
   {
     name: "Emeka N.",
-    role: "Founder, Ridgeview Realty",
     quote:
       "Our brochures went from generic to genuinely impressive. Clients started commenting on the design before we even finished the pitch.",
   },
   {
     name: "Blessing U.",
-    role: "Marketing Lead, Sunrise Microfinance",
     quote:
       "She took a boring compliance document and made it something people actually wanted to read. That's rare talent.",
   },
   {
     name: "Dr. Ifeoma K.",
-    role: "Radiant Dental Clinic",
     quote:
       "From our signage to our appointment cards, everything now feels like one cohesive brand. Patients notice the difference.",
   },
   {
     name: "Samuel T.",
-    role: "Founder, Trailblaze Fitness",
     quote:
       "K-Graphics understood our energy immediately. The gym's visual identity now matches how it actually feels to walk in.",
   },
   {
     name: "Ngozi F.",
-    role: "Event Planner, Amara Weddings",
     quote:
       "Every invite and seating chart she designed felt custom-made for the couple, never a template. Our clients were thrilled.",
   },
   {
     name: "Victor I.",
-    role: "Co-founder, Harbor & Co. Café",
     quote:
       "Our menu redesign alone increased how long customers lingered over it. Good design really does change behavior.",
   },
   {
     name: "Adaeze M.",
-    role: "Founder, Bloom Beauty Bar",
     quote:
       "She has an eye for detail most designers miss entirely. Every packaging mockup felt ready for a real shelf.",
   },
   {
     name: "Kingsley P.",
-    role: "Director, Horizon Logistics",
     quote:
       "Professional, prompt, and precise. Our fleet branding finally looks like the serious company we actually are.",
   },
   {
     name: "Faith E.",
-    role: "Founder, Little Sprouts Daycare",
     quote:
       "Parents comment on our branding all the time now. K-Graphics made us look as warm and trustworthy as we try to be.",
   },
 ];
 
-export default function Reviews() {
+interface ReviewsProps {
+  reviews?: Review[];
+}
+
+export default function Reviews({ reviews = [] }: ReviewsProps) {
+  const displayReviews =
+    reviews.length > 0
+      ? reviews.map((r) => ({
+          name: r.name,
+          quote: r.comment,
+          rating: r.rating,
+        }))
+      : FALLBACK_REVIEWS.map((r) => ({ ...r, rating: 5 }));
+
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const active = activeIndex !== null ? REVIEWS[activeIndex] : null;
+  const active = activeIndex !== null ? displayReviews[activeIndex] : null;
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -110,6 +115,20 @@ export default function Reviews() {
     const card = el.querySelector<HTMLElement>("[data-review-card]");
     const step = (card?.offsetWidth ?? 320) + 24;
     el.scrollBy({ left: step * dir, behavior: "smooth" });
+  };
+
+  const renderStars = (rating: number, size: "sm" | "lg") => {
+    const filled = Math.round(rating);
+    const cls = size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4";
+    return Array.from({ length: 5 }).map((_, idx) => (
+      <Star
+        key={idx}
+        className={`${cls} fill-current ${
+          idx < filled ? "text-yellow-400" : "text-paper/20"
+        }`}
+        strokeWidth={0}
+      />
+    ));
   };
 
   return (
@@ -141,11 +160,11 @@ export default function Reviews() {
           className="pt-7 md:pt-14 overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory [-webkit-overflow-scrolling:touch] scrollbar-none [&::-webkit-scrollbar]:hidden"
         >
           <div className="flex gap-3 px-6 lg:px-8 py-4">
-            {REVIEWS.map((review, i) => (
+            {displayReviews.map((review, i) => (
               <motion.button
                 type="button"
                 data-review-card
-                key={review.name}
+                key={`${review.name}-${i}`}
                 layoutId={`review-card-${i}`}
                 onClick={() => setActiveIndex(i)}
                 initial={{ opacity: 0, y: 16 }}
@@ -162,17 +181,10 @@ export default function Reviews() {
                   <p className="font-display text-sm text-paper md:text-base">
                     {review.name}
                   </p>
-                  <p className="text-xs text-paper/60">{review.role}</p>
                 </div>
 
-                <div className="mt-3 flex gap-0.5 text-yellow-400">
-                  {Array.from({ length: 5 }).map((_, idx) => (
-                    <Star
-                      key={idx}
-                      className="h-3.5 w-3.5 fill-current"
-                      strokeWidth={0}
-                    />
-                  ))}
+                <div className="mt-3 flex gap-0.5">
+                  {renderStars(review.rating, "sm")}
                 </div>
               </motion.button>
             ))}
@@ -248,14 +260,8 @@ export default function Reviews() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.2, delay: 0.1 }}
                 >
-                  <div className="flex gap-0.5 text-yellow-400">
-                    {Array.from({ length: 5 }).map((_, idx) => (
-                      <Star
-                        key={idx}
-                        className="h-4 w-4 fill-current"
-                        strokeWidth={0}
-                      />
-                    ))}
+                  <div className="flex gap-0.5">
+                    {renderStars(active.rating, "lg")}
                   </div>
 
                   <p className="mt-5 text-lg leading-relaxed text-paper">
@@ -266,7 +272,6 @@ export default function Reviews() {
                     <p className="text-sm font-semibold text-paper">
                       {active.name}
                     </p>
-                    <p className="text-xs text-paper/60">{active.role}</p>
                   </div>
                 </motion.div>
               </motion.div>
@@ -276,14 +281,11 @@ export default function Reviews() {
       </AnimatePresence>
 
       {/* Leave a review dialog */}
-
-      {/* Leave a review dialog */}
       <ReviewFormDialog
         open={formOpen}
         onClose={() => setFormOpen(false)}
-        onSubmit={async (data) => {
-          console.log("Review submitted:", data);
-          // wire up your actual submit endpoint here later
+        onSubmit={() => {
+          setFormOpen(false);
         }}
       />
     </section>
