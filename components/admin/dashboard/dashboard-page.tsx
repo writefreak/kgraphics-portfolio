@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  MessageSquareText,
+  Mail,
   Image as ImageIcon,
   Star,
   Check,
@@ -39,6 +39,7 @@ interface DashboardClientProps {
   totalDesigns: number;
   featuredCount: number;
   categoryCounts: CategoryCount[];
+  contactSubmissionsCount: number;
 }
 
 export function DashboardClient({
@@ -46,6 +47,7 @@ export function DashboardClient({
   totalDesigns,
   featuredCount,
   categoryCounts,
+  contactSubmissionsCount,
 }: DashboardClientProps) {
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [pendingIds, setPendingIds] = useState<Set<string>>(new Set());
@@ -89,10 +91,9 @@ export function DashboardClient({
 
   const stats = [
     {
-      label: "Needs Attention",
-      value: pending.length,
-      icon: MessageSquareText,
-      highlight: pending.length > 0,
+      label: "Contact Submissions",
+      value: contactSubmissionsCount,
+      icon: Mail,
     },
     { label: "Avg. Rating", value: avgRating, icon: Star },
     { label: "Total Designs", value: totalDesigns, icon: ImageIcon },
@@ -105,14 +106,16 @@ export function DashboardClient({
         {stats.map((stat) => (
           <Card
             key={stat.label}
-            className={stat.highlight ? "border-amber-300" : ""}
+            className={
+              "highlight" in stat && stat.highlight ? "border-amber-300" : ""
+            }
           >
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardDescription className="text-xs md:text-sm">
                 {stat.label}
               </CardDescription>
               <stat.icon
-                className={`h-4 w-4 ${stat.highlight ? "text-amber-500" : "text-ink/40"}`}
+                className={`h-4 w-4 ${"highlight" in stat && stat.highlight ? "text-amber-500" : "text-ink/40"}`}
               />
             </CardHeader>
             <CardContent>

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Container } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
+import { submitContactForm } from "@/lib/actions/contact";
 
 const contactLinks = [
   {
@@ -30,11 +31,25 @@ const contactLinks = [
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", description: "" });
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!form.name || !form.email || !form.description) return;
-    setSent(true);
-    setForm({ name: "", email: "", description: "" });
+
+    setSubmitting(true);
+    setError(null);
+
+    const result = await submitContactForm(form);
+
+    if (result.success) {
+      setSent(true);
+      setForm({ name: "", email: "", description: "" });
+    } else {
+      setError(result.error ?? "Something went wrong. Please try again.");
+    }
+
+    setSubmitting(false);
   };
 
   return (
@@ -168,12 +183,27 @@ export default function Contact() {
                 </motion.div>
               )}
 
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400"
+                >
+                  {error}
+                </motion.div>
+              )}
+
               <motion.button
                 onClick={handleSubmit}
+                disabled={submitting}
                 whileTap={{ scale: 0.97 }}
-                className="mt-2 w-full rounded-xl bg-accent py-3.5 text-sm font-semibold text-ink transition-colors duration-300 hover:bg-paper"
+                className="mt-2 w-full rounded-xl bg-accent py-3.5 text-sm font-semibold text-ink transition-colors duration-300 hover:bg-paper disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {sent ? "Message sent!" : "Send Message"}
+                {submitting
+                  ? "Sending..."
+                  : sent
+                    ? "Message sent!"
+                    : "Send Message"}
               </motion.button>
             </motion.div>
           </div>
