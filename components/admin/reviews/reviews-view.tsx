@@ -10,10 +10,15 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import type { Review } from "@/lib/mock-data";
 import { ReviewsTable } from "./reviews-table";
 import { ReviewCards } from "./review-cards";
 import { ReviewDetailDialog } from "./reviews-detail-dialog";
+import { Review } from "@/lib/types";
+import {
+  updateReviewStatus,
+  toggleReviewFeatured,
+  deleteReview,
+} from "@/app/(admin)/user-reviews/actions";
 
 const PAGE_SIZE = 10;
 
@@ -21,6 +26,7 @@ export function ReviewsView({ initialReviews }: { initialReviews: Review[] }) {
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [page, setPage] = useState(1);
+  const [error, setError] = useState<string | null>(null);
 
   const totalPages = Math.max(1, Math.ceil(reviews.length / PAGE_SIZE));
   const paginatedReviews = useMemo(
@@ -28,31 +34,73 @@ export function ReviewsView({ initialReviews }: { initialReviews: Review[] }) {
     [reviews, page],
   );
 
-  const updateStatus = (id: string, status: Review["status"]) => {
+  const updateStatus = async (id: string, status: Review["status"]) => {
+    const prevReviews = reviews;
+    const prevSelected = selectedReview;
+
+    setError(null);
     setReviews((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
     setSelectedReview((prev) => (prev?.id === id ? { ...prev, status } : prev));
+
+    const result = await updateReviewStatus(id, status);
+    if (!result.success) {
+      setReviews(prevReviews);
+      setSelectedReview(prevSelected);
+      setError(result.error ?? "Could not update review status.");
+    }
   };
 
-  const toggleFeatured = (id: string) => {
+  const toggleFeatured = async (id: string) => {
+    const target = reviews.find((r) => r.id === id);
+    if (!target) return;
+    const nextFeatured = !target.featured;
+
+    const prevReviews = reviews;
+    const prevSelected = selectedReview;
+
+    setError(null);
     setReviews((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, featured: !r.featured } : r)),
+      prev.map((r) => (r.id === id ? { ...r, featured: nextFeatured } : r)),
     );
     setSelectedReview((prev) =>
-      prev?.id === id ? { ...prev, featured: !prev.featured } : prev,
+      prev?.id === id ? { ...prev, featured: nextFeatured } : prev,
     );
+
+    const result = await toggleReviewFeatured(id, nextFeatured);
+    if (!result.success) {
+      setReviews(prevReviews);
+      setSelectedReview(prevSelected);
+      setError(result.error ?? "Could not update featured status.");
+    }
   };
 
-  const removeReview = (id: string) => {
+  const removeReview = async (id: string) => {
+    const prevReviews = reviews;
+    const prevSelected = selectedReview;
+
+    setError(null);
     setReviews((prev) => prev.filter((r) => r.id !== id));
     setSelectedReview((prev) => (prev?.id === id ? null : prev));
-    // If deleting the last item on a page pushes page count down, step back
     setPage((p) =>
       Math.min(p, Math.max(1, Math.ceil((reviews.length - 1) / PAGE_SIZE))),
     );
+
+    const result = await deleteReview(id);
+    if (!result.success) {
+      setReviews(prevReviews);
+      setSelectedReview(prevSelected);
+      setError(result.error ?? "Could not delete review.");
+    }
   };
 
   return (
     <>
+      {error && (
+        <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
       <ReviewsTable
         reviews={paginatedReviews}
         onSelect={setSelectedReview}

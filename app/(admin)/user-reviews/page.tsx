@@ -1,12 +1,24 @@
 // app/(admin)/userReviews/page.tsx
+import { prisma } from "@/lib/prisma";
 import { ReviewsView } from "@/components/admin/reviews/reviews-view";
-import { REVIEWS } from "@/lib/mock-data";
+import type { Review } from "@/lib/types";
 
-// Server Component — fetches data directly. Swap this for a Supabase/DB
-// query later (e.g. `await supabase.from("reviews").select("*")`) with
-// no other changes needed downstream.
+// Server Component — fetches directly from Supabase via Prisma.
 export default async function UserReviewsPage() {
-  const reviews = REVIEWS;
+  const rows = await prisma.review.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+
+  const reviews: Review[] = rows.map((row) => ({
+    id: row.id,
+    name: row.clientName,
+    rating: Number(row.rating),
+    comment: row.comment,
+    status: row.status as Review["status"],
+    featured: row.featured,
+    designId: row.designId,
+    createdAt: row.createdAt,
+  }));
 
   return (
     <div className="space-y-6 md:pt-10 pt-5">
@@ -19,7 +31,7 @@ export default async function UserReviewsPage() {
         </p>
       </div>
 
-      <ReviewsView initialReviews={REVIEWS} />
+      <ReviewsView initialReviews={reviews} />
     </div>
   );
 }

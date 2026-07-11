@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 export async function updateReviewStatus(
   id: string,
-  status: "approved" | "rejected",
+  status: "pending" | "approved" | "rejected",
 ) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
@@ -19,7 +19,7 @@ export async function updateReviewStatus(
     });
 
     revalidatePath("/");
-    revalidatePath("/user-reviews");
+    revalidatePath("/userReviews");
     return { success: true };
   } catch (err) {
     console.error("Failed to update review status:", err);

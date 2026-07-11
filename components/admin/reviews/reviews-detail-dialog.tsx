@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import type { Review } from "@/lib/mock-data";
+import { Review } from "@/lib/types";
 
 const statusStyles: Record<Review["status"], string> = {
   approved: "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
@@ -49,7 +49,13 @@ export function ReviewDetailDialog({
                 </Avatar>
                 <div>
                   <DialogTitle>{review.name}</DialogTitle>
-                  <DialogDescription>{review.createdAt}</DialogDescription>
+                  <DialogDescription>
+                    {review.createdAt.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </DialogDescription>
                 </div>
               </div>
             </DialogHeader>
