@@ -1,4 +1,3 @@
-// app/(admin)/dashboard/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -28,26 +27,31 @@ import {
   ChartConfig,
 } from "@/components/ui/chart";
 import { PieChart, Pie } from "recharts";
-import {
-  REVIEWS as INITIAL_REVIEWS,
-  DESIGNS,
-  DESIGNS_BY_CATEGORY,
-  type Review,
-} from "@/lib/mock-data";
+import type { Review, CategoryCount } from "@/lib/types";
+import { updateReviewStatus } from "@/app/(admin)/user-reviews/actions";
 
 const categoryConfig = {
   count: { label: "Designs" },
-  branding: { label: "Branding", color: "var(--ink)" },
-  print: { label: "Print & Digital", color: "var(--accent)" },
-  social: { label: "Social", color: "#94a3b8" },
 } satisfies ChartConfig;
 
-export default function DashboardPage() {
-  const [reviews, setReviews] = useState<Review[]>(INITIAL_REVIEWS);
+interface DashboardClientProps {
+  initialReviews: Review[];
+  totalDesigns: number;
+  featuredCount: number;
+  categoryCounts: CategoryCount[];
+}
+
+export function DashboardClient({
+  initialReviews,
+  totalDesigns,
+  featuredCount,
+  categoryCounts,
+}: DashboardClientProps) {
+  const [reviews, setReviews] = useState<Review[]>(initialReviews);
+  const [pendingIds, setPendingIds] = useState<Set<string>>(new Set());
 
   const pending = reviews.filter((r) => r.status === "pending");
   const approved = reviews.filter((r) => r.status === "approved");
-  const featuredDesigns = DESIGNS.filter((d) => d.featured);
   const avgRating =
     approved.length > 0
       ? (
@@ -62,9 +66,26 @@ export default function DashboardPage() {
     )
     .slice(0, 5);
 
-  const updateStatus = (id: string, status: Review["status"]) => {
+  async function handleStatusChange(
+    id: string,
+    status: "approved" | "rejected",
+  ) {
+    const previous = reviews;
     setReviews((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
-  };
+    setPendingIds((prev) => new Set(prev).add(id));
+
+    try {
+      await updateReviewStatus(id, status);
+    } catch {
+      setReviews(previous);
+    } finally {
+      setPendingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
+  }
 
   const stats = [
     {
@@ -74,13 +95,12 @@ export default function DashboardPage() {
       highlight: pending.length > 0,
     },
     { label: "Avg. Rating", value: avgRating, icon: Star },
-    { label: "Total Designs", value: DESIGNS.length, icon: ImageIcon },
-    { label: "Featured Pieces", value: featuredDesigns.length, icon: Star },
+    { label: "Total Designs", value: totalDesigns, icon: ImageIcon },
+    { label: "Featured Pieces", value: featuredCount, icon: Star },
   ];
 
   return (
     <div className="space-y-6 ">
-      {/* Stat cards */}
       <div className="grid grid-cols-2 gap-2 lg:gap-4 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card
@@ -103,7 +123,6 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        {/* Needs Attention — pending reviews with inline action */}
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
@@ -116,7 +135,7 @@ export default function DashboardPage() {
             </div>
             <Button asChild variant="ghost" size="sm">
               <Link
-                href="/admin/user-reviews"
+                href="/user-reviews"
                 className="flex items-center gap-1 text-xs md:text-sm"
               >
                 View all <ArrowRight size={14} />
@@ -169,7 +188,8 @@ export default function DashboardPage() {
                     size="icon"
                     variant="ghost"
                     className="h-7 w-7"
-                    onClick={() => updateStatus(review.id, "approved")}
+                    disabled={pendingIds.has(review.id)}
+                    onClick={() => handleStatusChange(review.id, "approved")}
                     aria-label="Approve"
                   >
                     <Check size={14} className="text-emerald-600" />
@@ -178,7 +198,8 @@ export default function DashboardPage() {
                     size="icon"
                     variant="ghost"
                     className="h-7 w-7"
-                    onClick={() => updateStatus(review.id, "rejected")}
+                    disabled={pendingIds.has(review.id)}
+                    onClick={() => handleStatusChange(review.id, "rejected")}
                     aria-label="Reject"
                   >
                     <X size={14} className="text-red-600" />
@@ -189,12 +210,11 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Designs by category — the one chart worth keeping */}
         <Card>
           <CardHeader>
             <CardTitle>Work by Category</CardTitle>
             <CardDescription className="text-xs md:text-sm">
-              What you've been designing most
+              What you&apos;ve been designing most
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -205,7 +225,7 @@ export default function DashboardPage() {
               <PieChart>
                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                 <Pie
-                  data={DESIGNS_BY_CATEGORY}
+                  data={categoryCounts}
                   dataKey="count"
                   nameKey="category"
                   innerRadius={55}
@@ -214,7 +234,7 @@ export default function DashboardPage() {
               </PieChart>
             </ChartContainer>
             <div className="mt-4 space-y-2">
-              {DESIGNS_BY_CATEGORY.map((c) => (
+              {categoryCounts.map((c) => (
                 <div
                   key={c.category}
                   className="flex items-center justify-between text-sm"
@@ -238,7 +258,6 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Recent activity feed */}
       <Card>
         <CardHeader>
           <CardTitle>Recent Activity</CardTitle>
@@ -260,7 +279,9 @@ export default function DashboardPage() {
                 </Avatar>
                 <div>
                   <p className="text-sm font-medium text-ink">{review.name}</p>
-                  <p className="text-xs text-ink/50">{review.createdAt}</p>
+                  <p className="text-xs text-ink/50">
+                    {new Date(review.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
               <Badge

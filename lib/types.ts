@@ -11,3 +11,19 @@ export interface Design {
   displayOrder: number;
   createdAt: Date;
 }
+
+export interface Review {
+  id: string;
+  name: string;
+  rating: number;
+  comment: string;
+  status: "pending" | "approved" | "rejected";
+  designId: string | null;
+  createdAt: Date;
+}
+
+export interface CategoryCount {
+  category: string;
+  count: number;
+  fill: string;
+}
