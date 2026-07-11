@@ -13,118 +13,28 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import BackButton from "../ui/back-button";
+import type { Design } from "@/lib/types";
 
-type PortfolioItem = {
-  id: number;
-  src: string;
-  alt: string;
-  category: string;
-};
+interface ContentProps {
+  designs: Design[];
+}
 
-const GALLERY_ITEMS: PortfolioItem[] = [
-  {
-    id: 1,
-    src: "/1.jpg",
-    alt: "Bolu Couture Flyer Design",
-    category: "Print & Digital",
-  },
-  {
-    id: 2,
-    src: "/2.jpg",
-    alt: "Jiggy's Glam Social Media Set",
-    category: "Social",
-  },
-  { id: 3, src: "/3.jpg", alt: "Why Wait Promo Post", category: "Social" },
-  {
-    id: 4,
-    src: "/4.jpg",
-    alt: "Happy Valentine's Day Post",
-    category: "Social",
-  },
-  {
-    id: 5,
-    src: "/5.jpg",
-    alt: "Morara Hair Therapy Business Flyer",
-    category: "Print & Digital",
-  },
-  {
-    id: 6,
-    src: "/6.jpg",
-    alt: "Global Innovation Hub Brand Identity",
-    category: "Branding",
-  },
-  {
-    id: 7,
-    src: "/7.jpg",
-    alt: "TalkWithChi Ladies Hangout Flyer",
-    category: "Print & Digital",
-  },
-  {
-    id: 8,
-    src: "/8.jpg",
-    alt: "Olaoye2026 Save The Date Flyer",
-    category: "Print & Digital",
-  },
-  {
-    id: 9,
-    src: "/9.jpg",
-    alt: "Morara Hair Therapy Product Packaging",
-    category: "Branding",
-  },
-  {
-    id: 10,
-    src: "/10.jpg",
-    alt: "Roged Exchange Flyer",
-    category: "Print & Digital",
-  },
-  {
-    id: 11,
-    src: "/11.jpg",
-    alt: "David Anthony Birthday Flyer",
-    category: "Print & Digital",
-  },
-  {
-    id: 12,
-    src: "/12.jpg",
-    alt: "StyledByKennyl Business Flyer",
-    category: "Print & Digital",
-  },
-  {
-    id: 13,
-    src: "/13.jpg",
-    alt: "Beauty J Empire Flyer",
-    category: "Print & Digital",
-  },
-  {
-    id: 14,
-    src: "/14.jpg",
-    alt: "Smadecable Brand Identity",
-    category: "Branding",
-  },
-  {
-    id: 15,
-    src: "/15.jpg",
-    alt: "Gem Fashion Brand Identity",
-    category: "Branding",
-  },
-];
-
-const CATEGORIES = [
-  "All",
-  ...Array.from(new Set(GALLERY_ITEMS.map((item) => item.category))),
-];
-
-const Content = () => {
+const Content = ({ designs = [] }: ContentProps) => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
+  const categories = useMemo(
+    () => ["All", ...Array.from(new Set(designs.map((d) => d.category)))],
+    [designs],
+  );
+
   const filteredItems = useMemo(
     () =>
       activeCategory === "All"
-        ? GALLERY_ITEMS
-        : GALLERY_ITEMS.filter((item) => item.category === activeCategory),
-    [activeCategory],
+        ? designs
+        : designs.filter((item) => item.category === activeCategory),
+    [designs, activeCategory],
   );
 
   const scrollByAmount = (dir: 1 | -1) => {
@@ -153,7 +63,7 @@ const Content = () => {
 
         {/* Category filters */}
         <div className="mt-10 flex gap-2 overflow-x-auto md:flex-wrap md:gap-3 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {CATEGORIES.map((category) => {
+          {categories.map((category) => {
             const isActive = category === activeCategory;
             return (
               <button
@@ -189,21 +99,26 @@ const Content = () => {
               {filteredItems.map((item) => (
                 <DialogTrigger asChild key={item.id}>
                   <div
-                    onClick={() => setSelectedImage(item.src)}
+                    onClick={() => setSelectedImage(item.imageUrl)}
                     className="group relative md:aspect-4/5 aspect-4/6 w-[220px] flex-shrink-0 snap-start overflow-hidden rounded-2xl sm:w-[280px] md:w-[320px]"
                   >
                     <img
-                      src={item.src}
-                      alt={item.alt}
+                      src={item.imageUrl}
+                      alt={item.imageAlt}
                       loading="lazy"
                       decoding="async"
                       className="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-ink/0 transition-colors duration-300 [@media(hover:hover)]:group-hover:bg-ink/20" />
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <p className="text-xs font-medium text-paper">
-                        {item.alt}
-                      </p>
+                    <div className="absolute inset-0 flex flex-col justify-end">
+                      <div className="bg-black/60 p-6 flex flex-col gap-2 md:gap-3 text-white backdrop-blur-sm">
+                        <h2 className="font-display line-clamp-1 font-bold text-white leading-snug">
+                          {item.title}
+                        </h2>
+                        <p className="text-xs md:text-sm text-white/80 line-clamp-2">
+                          {item.caption}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </DialogTrigger>

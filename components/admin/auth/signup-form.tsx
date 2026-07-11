@@ -164,7 +164,7 @@ export function SignupForm() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-sm">
+    <div className="mx-auto w-full max-w-sm px-6">
       <div className="mb-8 space-y-1.5">
         <h1 className="font-display text-2xl font-bold text-ink">
           Create your account
