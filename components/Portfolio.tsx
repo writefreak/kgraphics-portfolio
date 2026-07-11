@@ -28,12 +28,17 @@ export default function Portfolio({ designs = [] }: PortfolioProps) {
   const [isPaused, setIsPaused] = useState(false);
 
   const trackRef = useRef<HTMLDivElement>(null);
+  // Only used in static mode (< 5 designs) — this is the element that
+  // actually scrolls natively, so buttons and touch swipe act on the same target.
+  const scrollWrapperRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nudgeAnimation = useRef<ReturnType<typeof animate> | null>(null);
 
   // Fewer than 5 designs isn't enough to make an infinite marquee feel
-  // seamless — render the set once, statically, with no auto-scroll.
+  // seamless — render the set once, no duplication, no auto-scroll.
+  // Navigation still has to work though: buttons stay visible and drive a
+  // native scroll, and touch users can swipe directly.
   const shouldScroll = designs.length >= 5;
   const track = shouldScroll ? [...designs, ...designs] : designs;
 
@@ -55,13 +60,23 @@ export default function Portfolio({ designs = [] }: PortfolioProps) {
   };
 
   const nudge = (dir: 1 | -1) => {
-    if (!shouldScroll) return;
-    const el = trackRef.current;
-    if (!el) return;
-
-    const card = el.children[0] as HTMLElement | undefined;
+    const card = trackRef.current?.children[0] as HTMLElement | undefined;
     const gap = 20; // matches gap-5 (1.25rem) at sm+; adjust if you change the gap class
     const step = (card?.offsetWidth || 280) + gap;
+
+    if (!shouldScroll) {
+      // Static mode: no transform, no wraparound — just scroll the real
+      // container. This is also exactly what a swipe does, so buttons and
+      // touch stay in sync automatically.
+      scrollWrapperRef.current?.scrollBy({
+        left: dir * step,
+        behavior: "smooth",
+      });
+      return;
+    }
+
+    const el = trackRef.current;
+    if (!el) return;
     const halfWidth = el.scrollWidth / 2;
 
     // Cancel any in-flight nudge so rapid clicks don't fight each other
@@ -133,15 +148,24 @@ export default function Portfolio({ designs = [] }: PortfolioProps) {
           <DialogTitle className="sr-only">Project preview</DialogTitle>
 
           <motion.div
+            ref={scrollWrapperRef}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={viewportOnce}
             transition={{ duration: 0.6 }}
-            className="relative mt-12 w-full overflow-hidden"
+            className={
+              shouldScroll
+                ? "relative mt-12 w-full overflow-hidden"
+                : "relative mt-12 w-full overflow-x-auto [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            }
           >
             <motion.div
               ref={trackRef}
-              className="flex gap-4 sm:gap-5"
+              className={
+                shouldScroll
+                  ? "flex gap-4 sm:gap-5"
+                  : "flex gap-4 sm:gap-5 snap-x snap-mandatory"
+              }
               style={{
                 x,
                 willChange: "transform",
@@ -150,38 +174,9 @@ export default function Portfolio({ designs = [] }: PortfolioProps) {
               }}
             >
               {track.map((design, i) => {
-                const cardClassName =
-                  "group relative aspect-4/6 md:aspect-4/5 w-[220px] flex-shrink-0 cursor-pointer overflow-hidden rounded-2xl sm:w-[280px] md:w-[320px]";
-
-                const cardInner = (
-                  <>
-                    <img
-                      src={design.imageUrl}
-                      alt={design.imageAlt}
-                      width={320}
-                      height={400}
-                      loading="eager"
-                      decoding="async"
-                      className="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-ink/0 transition-colors duration-300 [@media(hover:hover)]:group-hover:bg-ink/20" />
-                  </>
-                );
-
-                // Cards linked to a Behance case study skip the lightbox and go straight there
-                if (design.behanceUrl) {
-                  return (
-                    <a
-                      key={`${design.id}-${i}`}
-                      href={design.behanceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cardClassName}
-                    >
-                      {cardInner}
-                    </a>
-                  );
-                }
+                const cardClassName = shouldScroll
+                  ? "group relative aspect-4/6 md:aspect-4/5 w-[220px] flex-shrink-0 cursor-pointer overflow-hidden rounded-2xl sm:w-[280px] md:w-[320px]"
+                  : "group relative aspect-4/6 md:aspect-4/5 w-[220px] flex-shrink-0 snap-start cursor-pointer overflow-hidden rounded-2xl sm:w-[280px] md:w-[320px]";
 
                 return (
                   <DialogTrigger asChild key={`${design.id}-${i}`}>
@@ -189,7 +184,29 @@ export default function Portfolio({ designs = [] }: PortfolioProps) {
                       onClick={() => setSelectedImage(design.imageUrl)}
                       className={cardClassName}
                     >
-                      {cardInner}
+                      <img
+                        src={design.imageUrl}
+                        alt={design.imageAlt}
+                        width={320}
+                        height={400}
+                        loading="eager"
+                        decoding="async"
+                        className="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-ink/0 transition-colors duration-300 [@media(hover:hover)]:group-hover:bg-ink/20" />
+
+                      {design.behanceUrl && (
+                        <a
+                          href={design.behanceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          aria-label="View on Behance"
+                          className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-ink/70 text-white opacity-0 transition-opacity duration-200 [@media(hover:hover)]:group-hover:opacity-100"
+                        >
+                          <ArrowUpRight size={14} />
+                        </a>
+                      )}
                     </div>
                   </DialogTrigger>
                 );
@@ -197,24 +214,22 @@ export default function Portfolio({ designs = [] }: PortfolioProps) {
             </motion.div>
           </motion.div>
 
-          {shouldScroll && (
-            <div className="mt-6 flex items-center gap-3 justify-end">
-              <button
-                onClick={() => nudge(-1)}
-                aria-label="Scroll left"
-                className="flex md:h-10 md:w-10 h-9 w-9 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                onClick={() => nudge(1)}
-                aria-label="Scroll right"
-                className="flex md:h-10 md:w-10 h-9 w-9 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          )}
+          <div className="mt-6 flex items-center gap-3 justify-end">
+            <button
+              onClick={() => nudge(-1)}
+              aria-label="Scroll left"
+              className="flex md:h-10 md:w-10 h-9 w-9 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() => nudge(1)}
+              aria-label="Scroll right"
+              className="flex md:h-10 md:w-10 h-9 w-9 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
 
           {selectedImage && (
             <DialogContent className="flex flex-col items-center border-none bg-transparent shadow-none">
