@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import ReviewFormDialog from "./ui/review-dialog";
 import type { Review } from "@/lib/types";
-import { submitReview } from "@/app/(admin)/user-reviews/actions";
 
 // Fallback data used only when the table is empty, so the section never
 // renders blank. Not real client reviews — just here for visual continuity.

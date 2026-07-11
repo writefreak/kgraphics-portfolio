@@ -9,7 +9,7 @@ import Contact from "@/components/Contact";
 import { Footer } from "@/components/shared/Footer";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import type { Design } from "@/lib/types";
+import type { Design, Review } from "@/lib/types";
 
 // Assumption (unspecified): homepage carousel shows featured designs only,
 // ordered by displayOrder. Drop the `where` clause if you want all designs.
@@ -22,9 +22,6 @@ async function getFeaturedDesigns(): Promise<Design[]> {
 
   return Promise.all(
     rows.map(async (row) => {
-      // imagePath is a storage path, not a URL — bucket isn't public, so
-      // resolve a signed URL on read (per project convention, never store
-      // the signed URL itself).
       const { data } = await supabaseAdmin.storage
         .from("design-images")
         .createSignedUrl(row.imagePath, 60 * 60);
@@ -46,8 +43,29 @@ async function getFeaturedDesigns(): Promise<Design[]> {
   );
 }
 
+async function getApprovedReviews(): Promise<Review[]> {
+  const rows = await prisma.review.findMany({
+    where: { status: "approved" },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return rows.map((row) => ({
+    id: row.id,
+    name: row.clientName,
+    rating: Number(row.rating),
+    comment: row.comment,
+    status: row.status as Review["status"],
+    featured: row.featured,
+    designId: row.designId,
+    createdAt: row.createdAt,
+  }));
+}
+
 export default async function Home() {
-  const designs = await getFeaturedDesigns();
+  const [designs, reviews] = await Promise.all([
+    getFeaturedDesigns(),
+    getApprovedReviews(),
+  ]);
 
   return (
     <>
@@ -56,7 +74,7 @@ export default async function Home() {
         <Services />
         <WhyChooseUs />
         <Portfolio designs={designs} />
-        <Reviews />
+        <Reviews reviews={reviews} />
         <BrandStory />
       </main>
     </>
