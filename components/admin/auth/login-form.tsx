@@ -107,80 +107,77 @@ export function LoginForm() {
 
   return (
     <div className="mx-auto w-full max-w-sm">
-      <Card className="p-4">
-        <div className="space-y-1.5">
-          <h1 className="font-display text-2xl font-bold text-ink">
-            Welcome back
-          </h1>
-          <p className="text-xs md:text-sm text-ink/60">
-            Sign in to manage your K-Graphics dashboard.
-          </p>
-        </div>
-        <CardHeader></CardHeader>
-        <form onSubmit={handleSubmit} noValidate className="space-y-5">
-          {formError && (
-            <p
-              role="alert"
-              className="rounded-lg border border-destructive/30 bg-destructive/5 px-3.5 py-2.5 text-sm text-destructive"
-            >
-              {formError}
-            </p>
-          )}
-
-          <TextField
-            label="Email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            value={values.email}
-            onChange={(v) => handleChange("email", v)}
-            onBlur={() => handleBlur("email")}
-            error={errors.email ?? clerkErrors?.fields?.identifier?.message}
-            placeholder="you@studio.com"
-          />
-
-          <div className="space-y-1.5">
-            <PasswordInput
-              label="Password"
-              name="password"
-              autoComplete="current-password"
-              value={values.password}
-              onChange={(v) => handleChange("password", v)}
-              onBlur={() => handleBlur("password")}
-              error={errors.password ?? clerkErrors?.fields?.password?.message}
-            />
-            <div className="flex justify-end">
-              <Link
-                href="/forgot-password"
-                className="text-xs font-medium text-accent hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
-          </div>
-
-          <div id="clerk-captcha" />
-
-          <button
-            type="submit"
-            disabled={submitting}
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-ink px-4 py-2.5 text-sm font-medium text-paper transition-opacity hover:opacity-90 disabled:opacity-60"
+      <div className="space-y-1.5 md:pb-8 pb-5">
+        <h1 className="font-display text-2xl font-bold text-ink">
+          Welcome back
+        </h1>
+        <p className="text-xs md:text-sm text-ink/60">
+          Sign in to manage your K-Graphics dashboard.
+        </p>
+      </div>
+      <form onSubmit={handleSubmit} noValidate className="space-y-5">
+        {formError && (
+          <p
+            role="alert"
+            className="rounded-lg border border-destructive/30 bg-destructive/5 px-3.5 py-2.5 text-sm text-destructive"
           >
-            {submitting && <Loader2 size={16} className="animate-spin" />}
-            {submitting ? "Signing in…" : "Sign in"}
-          </button>
-
-          <p className="text-center text-sm text-ink/60">
-            New to K-Graphics?{" "}
-            <Link
-              href="/signup"
-              className="font-medium text-accent hover:underline"
-            >
-              Create an account
-            </Link>
+            {formError}
           </p>
-        </form>
-      </Card>
+        )}
+
+        <TextField
+          label="Email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          value={values.email}
+          onChange={(v) => handleChange("email", v)}
+          onBlur={() => handleBlur("email")}
+          error={errors.email ?? clerkErrors?.fields?.identifier?.message}
+          placeholder="you@studio.com"
+        />
+
+        <div className="space-y-1.5">
+          <PasswordInput
+            label="Password"
+            name="password"
+            autoComplete="current-password"
+            value={values.password}
+            onChange={(v) => handleChange("password", v)}
+            onBlur={() => handleBlur("password")}
+            error={errors.password ?? clerkErrors?.fields?.password?.message}
+          />
+          <div className="flex justify-end">
+            <Link
+              href="/forgot-password"
+              className="text-xs font-medium text-accent hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        </div>
+
+        <div id="clerk-captcha" />
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-ink px-4 py-2.5 text-sm font-medium text-paper transition-opacity hover:opacity-90 disabled:opacity-60"
+        >
+          {submitting && <Loader2 size={16} className="animate-spin" />}
+          {submitting ? "Signing in…" : "Sign in"}
+        </button>
+
+        <p className="text-center text-sm text-ink/60">
+          New to K-Graphics?{" "}
+          <Link
+            href="/signup"
+            className="font-medium text-accent hover:underline"
+          >
+            Create an account
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }
