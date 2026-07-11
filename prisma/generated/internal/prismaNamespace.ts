@@ -388,7 +388,8 @@ export const ModelName = {
   Design: 'Design',
   Review: 'Review',
   AdminProfile: 'AdminProfile',
-  AnalyticsEvent: 'AnalyticsEvent'
+  AnalyticsEvent: 'AnalyticsEvent',
+  ContactSubmission: 'ContactSubmission'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "category" | "design" | "review" | "adminProfile" | "analyticsEvent"
+    modelProps: "category" | "design" | "review" | "adminProfile" | "analyticsEvent" | "contactSubmission"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -778,6 +779,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ContactSubmission: {
+      payload: Prisma.$ContactSubmissionPayload<ExtArgs>
+      fields: Prisma.ContactSubmissionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ContactSubmissionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ContactSubmissionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload>
+        }
+        findFirst: {
+          args: Prisma.ContactSubmissionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ContactSubmissionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload>
+        }
+        findMany: {
+          args: Prisma.ContactSubmissionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload>[]
+        }
+        create: {
+          args: Prisma.ContactSubmissionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload>
+        }
+        createMany: {
+          args: Prisma.ContactSubmissionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ContactSubmissionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload>[]
+        }
+        delete: {
+          args: Prisma.ContactSubmissionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload>
+        }
+        update: {
+          args: Prisma.ContactSubmissionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ContactSubmissionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ContactSubmissionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ContactSubmissionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ContactSubmissionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSubmissionPayload>
+        }
+        aggregate: {
+          args: Prisma.ContactSubmissionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateContactSubmission>
+        }
+        groupBy: {
+          args: Prisma.ContactSubmissionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactSubmissionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ContactSubmissionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactSubmissionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -880,6 +955,17 @@ export const AnalyticsEventScalarFieldEnum = {
 } as const
 
 export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
+
+
+export const ContactSubmissionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  description: 'description',
+  createdAt: 'createdAt'
+} as const
+
+export type ContactSubmissionScalarFieldEnum = (typeof ContactSubmissionScalarFieldEnum)[keyof typeof ContactSubmissionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1134,6 +1220,7 @@ export type GlobalOmitConfig = {
   review?: Prisma.ReviewOmit
   adminProfile?: Prisma.AdminProfileOmit
   analyticsEvent?: Prisma.AnalyticsEventOmit
+  contactSubmission?: Prisma.ContactSubmissionOmit
 }
 
 /* Types for Logging */

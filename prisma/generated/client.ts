@@ -66,3 +66,8 @@ export type AdminProfile = Prisma.AdminProfileModel
  * 
  */
 export type AnalyticsEvent = Prisma.AnalyticsEventModel
+/**
+ * Model ContactSubmission
+ * 
+ */
+export type ContactSubmission = Prisma.ContactSubmissionModel

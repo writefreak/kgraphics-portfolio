@@ -83,3 +83,13 @@ model AnalyticsEvent {
   @@index([createdAt])
   @@map("analytics_events")
 }
+
+model ContactSubmission {
+  id          String   @id @default(uuid())
+  name        String
+  email       String
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("contact_submissions")
+}

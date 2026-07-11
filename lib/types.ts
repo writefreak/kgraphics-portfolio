@@ -28,3 +28,11 @@ export interface CategoryCount {
   count: number;
   fill: string;
 }
+
+export interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  description: string;
+  createdAt: Date;
+}
