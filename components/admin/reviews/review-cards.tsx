@@ -6,8 +6,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import type { Review } from "@/lib/mock-data";
 import { ConfirmActionButton } from "@/components/ui/confirm-action";
+import { Review } from "@/lib/types";
 
 const statusStyles: Record<Review["status"], string> = {
   approved: "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
