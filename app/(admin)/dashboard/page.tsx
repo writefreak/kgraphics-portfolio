@@ -11,7 +11,7 @@ const CATEGORY_COLORS = [
 ];
 
 export default async function DashboardPage() {
-  const [designRows, reviewRows] = await Promise.all([
+  const [designRows, reviewRows, contactSubmissionsCount] = await Promise.all([
     prisma.design.findMany({
       include: { category: true },
       orderBy: { displayOrder: "asc" },
@@ -19,6 +19,7 @@ export default async function DashboardPage() {
     prisma.review.findMany({
       orderBy: { createdAt: "desc" },
     }),
+    prisma.contactSubmission.count(),
   ]);
 
   const reviews: Review[] = reviewRows.map((r) => ({
@@ -63,6 +64,7 @@ export default async function DashboardPage() {
         totalDesigns={totalDesigns}
         featuredCount={featuredCount}
         categoryCounts={categoryCounts}
+        contactSubmissionsCount={contactSubmissionsCount}
       />
     </div>
   );
