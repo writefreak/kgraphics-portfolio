@@ -21,7 +21,7 @@ const body = Manrope({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://kgraphics-portfolio.vercel.app"), // swap for the real production domain
+  metadataBase: new URL("https://kgraphics-portfolio.vercel.app"),
   title: {
     default: "K-Graphics | Brand & Visual Design",
     template: "%s | K-Graphics",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     title: "K-Graphics | Brand & Visual Design",
     description:
       "K-Graphics translates your vision into soul-rich, timeless visuals that reflect your values and identity.",
-    url: "https://kgraphics-portfolio.vercel.app", // swap for the real production domain
+    url: "https://kgraphics-portfolio.vercel.app",
     siteName: "K-Graphics",
     images: [{ url: "/kemi.jpeg" }],
   },
@@ -61,6 +61,9 @@ export const metadata: Metadata = {
       follow: true,
       "max-image-preview": "large",
     },
+  },
+  verification: {
+    google: "XVZA9c7fnpOauxBDT9MtF-ITrf6LySHdN3lS5T7nUx8",
   },
 };
 
