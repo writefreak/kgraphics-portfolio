@@ -21,9 +21,47 @@ const body = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "K-Graphics | Brand & Visual Design",
+  metadataBase: new URL("https://kgraphics-portfolio.vercel.app"), // swap for the real production domain
+  title: {
+    default: "K-Graphics | Brand & Visual Design",
+    template: "%s | K-Graphics",
+  },
   description:
     "K-Graphics translates your vision into soul-rich, timeless visuals that reflect your values and identity. Brand identity, social design, and custom digital art.",
+  keywords: [
+    "brand identity design",
+    "graphic design studio",
+    "logo design",
+    "visual identity",
+    "packaging design",
+    "K-Graphics",
+  ],
+  authors: [{ name: "K-Graphics" }],
+  openGraph: {
+    type: "website",
+    title: "K-Graphics | Brand & Visual Design",
+    description:
+      "K-Graphics translates your vision into soul-rich, timeless visuals that reflect your values and identity.",
+    url: "https://kgraphics-portfolio.vercel.app", // swap for the real production domain
+    siteName: "K-Graphics",
+    images: [{ url: "/kemi.jpeg" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "K-Graphics | Brand & Visual Design",
+    description:
+      "K-Graphics translates your vision into soul-rich, timeless visuals that reflect your values and identity.",
+    images: ["/kemi.jpeg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+    },
+  },
 };
 
 export default function RootLayout({
@@ -42,7 +80,24 @@ export default function RootLayout({
           geist.variable,
         )}
       >
-        <body className="font-body antialiased">{children}</body>
+        <body className="font-body antialiased">
+          {children}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "ProfessionalService",
+                name: "K-Graphics",
+                description:
+                  "K-Graphics creates soul-rich, timeless visual identities, logos, brochures, packaging, and brand systems.",
+                url: "https://kgraphics-portfolio.vercel.app",
+                image: "https://kgraphics-portfolio.vercel.app/kemi.jpeg",
+                priceRange: "$$",
+              }),
+            }}
+          />
+        </body>
       </html>
     </ClerkProvider>
   );
