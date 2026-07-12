@@ -1,11 +1,22 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Download } from "lucide-react";
 import { Container, SectionLabel } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
+import { getBrandStory } from "@/app/(admin)/brand-story/actions";
+import type { BrandStory as BrandStoryType } from "@/lib/types";
 
 export default function BrandStory() {
+  const [brandStory, setBrandStory] = useState<BrandStoryType | null>(null);
+
+  useEffect(() => {
+    getBrandStory()
+      .then(setBrandStory)
+      .catch(() => setBrandStory(null));
+  }, []);
+
   return (
     <section className="py-28 md:py-40">
       <Container>
@@ -26,7 +37,11 @@ export default function BrandStory() {
             </motion.h2>
             <motion.div variants={fadeUp} className="md:pt-8 pt-5 md:pb-0 pb-4">
               <a
-                href="#"
+                href={
+                  brandStory
+                    ? `${brandStory.fileUrl}?download=${encodeURIComponent(brandStory.fileName)}`
+                    : "#"
+                }
                 className="inline-flex items-center gap-2 rounded-2xl bg-ink px-6 py-3.5 text-xs md:text-sm font-semibold text-paper transition-colors hover:bg-accent"
               >
                 <Download size={16} />

@@ -9,6 +9,7 @@ import {
   deleteBrandStory,
   uploadBrandStory,
 } from "@/app/(admin)/brand-story/actions";
+import { ConfirmActionButton } from "../ui/confirm-action";
 
 interface BrandStoryClientProps {
   initialBrandStory: BrandStory | null;
@@ -54,9 +55,6 @@ export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
   };
 
   const handleDelete = () => {
-    if (!confirm("Delete the current brand story PDF? This can't be undone."))
-      return;
-
     startTransition(async () => {
       try {
         await deleteBrandStory();
@@ -118,18 +116,22 @@ export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
                 >
                   <Download size={16} />
                 </a>
-                <button
-                  onClick={handleDelete}
-                  disabled={isPending}
-                  aria-label="Delete PDF"
+                <ConfirmActionButton
+                  onConfirm={handleDelete}
+                  title="Delete brand story?"
+                  description="This removes the current PDF permanently. This can't be undone."
+                  confirmLabel={isPending ? "Deleting…" : "Delete"}
+                  destructive
+                  ariaLabel="Delete PDF"
                   className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors hover:border-red-500 hover:text-red-500 disabled:opacity-50"
-                >
-                  {isPending ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : (
-                    <Trash2 size={16} />
-                  )}
-                </button>
+                  icon={
+                    isPending ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <Trash2 size={16} />
+                    )
+                  }
+                />
               </div>
             </div>
           ) : (
