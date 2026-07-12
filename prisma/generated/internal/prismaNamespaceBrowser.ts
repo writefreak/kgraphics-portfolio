@@ -157,6 +157,7 @@ export const BrandStoryScalarFieldEnum = {
   fileName: 'fileName',
   filePath: 'filePath',
   fileSize: 'fileSize',
+  downloadCount: 'downloadCount',
   uploadedAt: 'uploadedAt'
 } as const
 

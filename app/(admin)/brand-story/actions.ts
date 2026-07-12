@@ -22,6 +22,7 @@ export async function getBrandStory(): Promise<BrandStory | null> {
     fileUrl: data.publicUrl,
     fileSize: row.fileSize,
     uploadedAt: row.uploadedAt,
+    downloadCount: row.downloadCount,
   };
 }
 
@@ -68,4 +69,14 @@ export async function deleteBrandStory() {
   await prisma.brandStory.delete({ where: { id: existing.id } });
 
   revalidatePath("/brand-story");
+}
+
+export async function incrementBrandStoryDownload() {
+  const existing = await prisma.brandStory.findFirst();
+  if (!existing) return;
+
+  await prisma.brandStory.update({
+    where: { id: existing.id },
+    data: { downloadCount: { increment: 1 } },
+  });
 }

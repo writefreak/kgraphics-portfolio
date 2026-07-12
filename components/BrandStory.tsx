@@ -42,6 +42,9 @@ export default function BrandStory() {
                     ? `${brandStory.fileUrl}?download=${encodeURIComponent(brandStory.fileName)}`
                     : "#"
                 }
+                onClick={() => {
+                  if (brandStory) incrementBrandStoryDownload();
+                }}
                 className="inline-flex items-center gap-2 rounded-2xl bg-ink px-6 py-3.5 text-xs md:text-sm font-semibold text-paper transition-colors hover:bg-accent"
               >
                 <Download size={16} />

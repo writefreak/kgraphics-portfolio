@@ -42,5 +42,6 @@ export interface BrandStory {
   fileName: string;
   fileUrl: string;
   fileSize: number;
+  downloadCount: number;
   uploadedAt: Date;
 }

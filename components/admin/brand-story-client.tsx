@@ -43,6 +43,7 @@ export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
           fileName: file.name,
           fileUrl: "",
           fileSize: file.size,
+          downloadCount: 0,
           uploadedAt: new Date(),
         });
         window.location.reload();

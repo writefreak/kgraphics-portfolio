@@ -28,10 +28,12 @@ export type AggregateBrandStory = {
 
 export type BrandStoryAvgAggregateOutputType = {
   fileSize: number | null
+  downloadCount: number | null
 }
 
 export type BrandStorySumAggregateOutputType = {
   fileSize: number | null
+  downloadCount: number | null
 }
 
 export type BrandStoryMinAggregateOutputType = {
@@ -39,6 +41,7 @@ export type BrandStoryMinAggregateOutputType = {
   fileName: string | null
   filePath: string | null
   fileSize: number | null
+  downloadCount: number | null
   uploadedAt: Date | null
 }
 
@@ -47,6 +50,7 @@ export type BrandStoryMaxAggregateOutputType = {
   fileName: string | null
   filePath: string | null
   fileSize: number | null
+  downloadCount: number | null
   uploadedAt: Date | null
 }
 
@@ -55,6 +59,7 @@ export type BrandStoryCountAggregateOutputType = {
   fileName: number
   filePath: number
   fileSize: number
+  downloadCount: number
   uploadedAt: number
   _all: number
 }
@@ -62,10 +67,12 @@ export type BrandStoryCountAggregateOutputType = {
 
 export type BrandStoryAvgAggregateInputType = {
   fileSize?: true
+  downloadCount?: true
 }
 
 export type BrandStorySumAggregateInputType = {
   fileSize?: true
+  downloadCount?: true
 }
 
 export type BrandStoryMinAggregateInputType = {
@@ -73,6 +80,7 @@ export type BrandStoryMinAggregateInputType = {
   fileName?: true
   filePath?: true
   fileSize?: true
+  downloadCount?: true
   uploadedAt?: true
 }
 
@@ -81,6 +89,7 @@ export type BrandStoryMaxAggregateInputType = {
   fileName?: true
   filePath?: true
   fileSize?: true
+  downloadCount?: true
   uploadedAt?: true
 }
 
@@ -89,6 +98,7 @@ export type BrandStoryCountAggregateInputType = {
   fileName?: true
   filePath?: true
   fileSize?: true
+  downloadCount?: true
   uploadedAt?: true
   _all?: true
 }
@@ -184,6 +194,7 @@ export type BrandStoryGroupByOutputType = {
   fileName: string
   filePath: string
   fileSize: number
+  downloadCount: number
   uploadedAt: Date
   _count: BrandStoryCountAggregateOutputType | null
   _avg: BrandStoryAvgAggregateOutputType | null
@@ -215,6 +226,7 @@ export type BrandStoryWhereInput = {
   fileName?: Prisma.StringFilter<"BrandStory"> | string
   filePath?: Prisma.StringFilter<"BrandStory"> | string
   fileSize?: Prisma.IntFilter<"BrandStory"> | number
+  downloadCount?: Prisma.IntFilter<"BrandStory"> | number
   uploadedAt?: Prisma.DateTimeFilter<"BrandStory"> | Date | string
 }
 
@@ -223,6 +235,7 @@ export type BrandStoryOrderByWithRelationInput = {
   fileName?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
   fileSize?: Prisma.SortOrder
+  downloadCount?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
 }
 
@@ -234,6 +247,7 @@ export type BrandStoryWhereUniqueInput = Prisma.AtLeast<{
   fileName?: Prisma.StringFilter<"BrandStory"> | string
   filePath?: Prisma.StringFilter<"BrandStory"> | string
   fileSize?: Prisma.IntFilter<"BrandStory"> | number
+  downloadCount?: Prisma.IntFilter<"BrandStory"> | number
   uploadedAt?: Prisma.DateTimeFilter<"BrandStory"> | Date | string
 }, "id">
 
@@ -242,6 +256,7 @@ export type BrandStoryOrderByWithAggregationInput = {
   fileName?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
   fileSize?: Prisma.SortOrder
+  downloadCount?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
   _count?: Prisma.BrandStoryCountOrderByAggregateInput
   _avg?: Prisma.BrandStoryAvgOrderByAggregateInput
@@ -258,6 +273,7 @@ export type BrandStoryScalarWhereWithAggregatesInput = {
   fileName?: Prisma.StringWithAggregatesFilter<"BrandStory"> | string
   filePath?: Prisma.StringWithAggregatesFilter<"BrandStory"> | string
   fileSize?: Prisma.IntWithAggregatesFilter<"BrandStory"> | number
+  downloadCount?: Prisma.IntWithAggregatesFilter<"BrandStory"> | number
   uploadedAt?: Prisma.DateTimeWithAggregatesFilter<"BrandStory"> | Date | string
 }
 
@@ -266,6 +282,7 @@ export type BrandStoryCreateInput = {
   fileName: string
   filePath: string
   fileSize: number
+  downloadCount?: number
   uploadedAt?: Date | string
 }
 
@@ -274,6 +291,7 @@ export type BrandStoryUncheckedCreateInput = {
   fileName: string
   filePath: string
   fileSize: number
+  downloadCount?: number
   uploadedAt?: Date | string
 }
 
@@ -282,6 +300,7 @@ export type BrandStoryUpdateInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   fileSize?: Prisma.IntFieldUpdateOperationsInput | number
+  downloadCount?: Prisma.IntFieldUpdateOperationsInput | number
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -290,6 +309,7 @@ export type BrandStoryUncheckedUpdateInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   fileSize?: Prisma.IntFieldUpdateOperationsInput | number
+  downloadCount?: Prisma.IntFieldUpdateOperationsInput | number
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -298,6 +318,7 @@ export type BrandStoryCreateManyInput = {
   fileName: string
   filePath: string
   fileSize: number
+  downloadCount?: number
   uploadedAt?: Date | string
 }
 
@@ -306,6 +327,7 @@ export type BrandStoryUpdateManyMutationInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   fileSize?: Prisma.IntFieldUpdateOperationsInput | number
+  downloadCount?: Prisma.IntFieldUpdateOperationsInput | number
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -314,6 +336,7 @@ export type BrandStoryUncheckedUpdateManyInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   fileSize?: Prisma.IntFieldUpdateOperationsInput | number
+  downloadCount?: Prisma.IntFieldUpdateOperationsInput | number
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -322,11 +345,13 @@ export type BrandStoryCountOrderByAggregateInput = {
   fileName?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
   fileSize?: Prisma.SortOrder
+  downloadCount?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
 }
 
 export type BrandStoryAvgOrderByAggregateInput = {
   fileSize?: Prisma.SortOrder
+  downloadCount?: Prisma.SortOrder
 }
 
 export type BrandStoryMaxOrderByAggregateInput = {
@@ -334,6 +359,7 @@ export type BrandStoryMaxOrderByAggregateInput = {
   fileName?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
   fileSize?: Prisma.SortOrder
+  downloadCount?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
 }
 
@@ -342,11 +368,13 @@ export type BrandStoryMinOrderByAggregateInput = {
   fileName?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
   fileSize?: Prisma.SortOrder
+  downloadCount?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
 }
 
 export type BrandStorySumOrderByAggregateInput = {
   fileSize?: Prisma.SortOrder
+  downloadCount?: Prisma.SortOrder
 }
 
 
@@ -356,6 +384,7 @@ export type BrandStorySelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   fileName?: boolean
   filePath?: boolean
   fileSize?: boolean
+  downloadCount?: boolean
   uploadedAt?: boolean
 }, ExtArgs["result"]["brandStory"]>
 
@@ -364,6 +393,7 @@ export type BrandStorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   fileName?: boolean
   filePath?: boolean
   fileSize?: boolean
+  downloadCount?: boolean
   uploadedAt?: boolean
 }, ExtArgs["result"]["brandStory"]>
 
@@ -372,6 +402,7 @@ export type BrandStorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   fileName?: boolean
   filePath?: boolean
   fileSize?: boolean
+  downloadCount?: boolean
   uploadedAt?: boolean
 }, ExtArgs["result"]["brandStory"]>
 
@@ -380,10 +411,11 @@ export type BrandStorySelectScalar = {
   fileName?: boolean
   filePath?: boolean
   fileSize?: boolean
+  downloadCount?: boolean
   uploadedAt?: boolean
 }
 
-export type BrandStoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fileName" | "filePath" | "fileSize" | "uploadedAt", ExtArgs["result"]["brandStory"]>
+export type BrandStoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fileName" | "filePath" | "fileSize" | "downloadCount" | "uploadedAt", ExtArgs["result"]["brandStory"]>
 
 export type $BrandStoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BrandStory"
@@ -393,6 +425,7 @@ export type $BrandStoryPayload<ExtArgs extends runtime.Types.Extensions.Internal
     fileName: string
     filePath: string
     fileSize: number
+    downloadCount: number
     uploadedAt: Date
   }, ExtArgs["result"]["brandStory"]>
   composites: {}
@@ -821,6 +854,7 @@ export interface BrandStoryFieldRefs {
   readonly fileName: Prisma.FieldRef<"BrandStory", 'String'>
   readonly filePath: Prisma.FieldRef<"BrandStory", 'String'>
   readonly fileSize: Prisma.FieldRef<"BrandStory", 'Int'>
+  readonly downloadCount: Prisma.FieldRef<"BrandStory", 'Int'>
   readonly uploadedAt: Prisma.FieldRef<"BrandStory", 'DateTime'>
 }
     
