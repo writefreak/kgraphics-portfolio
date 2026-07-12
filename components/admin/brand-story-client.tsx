@@ -16,6 +16,7 @@ import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import type { BrandStory } from "@/lib/types";
 import {
   deleteBrandStory,
+  incrementBrandStoryDownload,
   uploadBrandStory,
 } from "@/app/(admin)/brand-story/actions";
 import { ConfirmActionButton } from "../ui/confirm-action";
@@ -134,6 +135,7 @@ export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
                   <a
                     href={`${brandStory.fileUrl}?download=${encodeURIComponent(brandStory.fileName)}`}
                     aria-label="Download PDF"
+                    onClick={() => incrementBrandStoryDownload()}
                     className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white transition-colors hover:bg-accent"
                   >
                     <Download size={16} />
