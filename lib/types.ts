@@ -36,3 +36,11 @@ export interface ContactSubmission {
   description: string;
   createdAt: Date;
 }
+
+export interface BrandStory {
+  id: string;
+  fileName: string;
+  fileUrl: string;
+  fileSize: number;
+  uploadedAt: Date;
+}

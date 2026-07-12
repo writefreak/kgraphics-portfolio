@@ -56,7 +56,8 @@ export const ModelName = {
   Review: 'Review',
   AdminProfile: 'AdminProfile',
   AnalyticsEvent: 'AnalyticsEvent',
-  ContactSubmission: 'ContactSubmission'
+  ContactSubmission: 'ContactSubmission',
+  BrandStory: 'BrandStory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -149,6 +150,17 @@ export const ContactSubmissionScalarFieldEnum = {
 } as const
 
 export type ContactSubmissionScalarFieldEnum = (typeof ContactSubmissionScalarFieldEnum)[keyof typeof ContactSubmissionScalarFieldEnum]
+
+
+export const BrandStoryScalarFieldEnum = {
+  id: 'id',
+  fileName: 'fileName',
+  filePath: 'filePath',
+  fileSize: 'fileSize',
+  uploadedAt: 'uploadedAt'
+} as const
+
+export type BrandStoryScalarFieldEnum = (typeof BrandStoryScalarFieldEnum)[keyof typeof BrandStoryScalarFieldEnum]
 
 
 export const SortOrder = {

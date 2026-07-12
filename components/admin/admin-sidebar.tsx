@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   MessageSquareText,
   Image as ImageIcon,
+  FileText,
   LogOut,
   X,
   Loader2,
@@ -37,6 +38,7 @@ const MENU = [
     icon: MessageSquareText,
   },
   { title: "Designs", url: "/designs", icon: ImageIcon },
+  { title: "Brand Story", url: "/brand-story", icon: FileText },
 ];
 
 const SIDEBAR_STYLE = {

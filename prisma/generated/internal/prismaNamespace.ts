@@ -389,7 +389,8 @@ export const ModelName = {
   Review: 'Review',
   AdminProfile: 'AdminProfile',
   AnalyticsEvent: 'AnalyticsEvent',
-  ContactSubmission: 'ContactSubmission'
+  ContactSubmission: 'ContactSubmission',
+  BrandStory: 'BrandStory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -405,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "category" | "design" | "review" | "adminProfile" | "analyticsEvent" | "contactSubmission"
+    modelProps: "category" | "design" | "review" | "adminProfile" | "analyticsEvent" | "contactSubmission" | "brandStory"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -853,6 +854,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BrandStory: {
+      payload: Prisma.$BrandStoryPayload<ExtArgs>
+      fields: Prisma.BrandStoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BrandStoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BrandStoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload>
+        }
+        findFirst: {
+          args: Prisma.BrandStoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BrandStoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload>
+        }
+        findMany: {
+          args: Prisma.BrandStoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload>[]
+        }
+        create: {
+          args: Prisma.BrandStoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload>
+        }
+        createMany: {
+          args: Prisma.BrandStoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BrandStoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload>[]
+        }
+        delete: {
+          args: Prisma.BrandStoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload>
+        }
+        update: {
+          args: Prisma.BrandStoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.BrandStoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BrandStoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BrandStoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.BrandStoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrandStoryPayload>
+        }
+        aggregate: {
+          args: Prisma.BrandStoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBrandStory>
+        }
+        groupBy: {
+          args: Prisma.BrandStoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BrandStoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BrandStoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BrandStoryCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -966,6 +1041,17 @@ export const ContactSubmissionScalarFieldEnum = {
 } as const
 
 export type ContactSubmissionScalarFieldEnum = (typeof ContactSubmissionScalarFieldEnum)[keyof typeof ContactSubmissionScalarFieldEnum]
+
+
+export const BrandStoryScalarFieldEnum = {
+  id: 'id',
+  fileName: 'fileName',
+  filePath: 'filePath',
+  fileSize: 'fileSize',
+  uploadedAt: 'uploadedAt'
+} as const
+
+export type BrandStoryScalarFieldEnum = (typeof BrandStoryScalarFieldEnum)[keyof typeof BrandStoryScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1221,6 +1307,7 @@ export type GlobalOmitConfig = {
   adminProfile?: Prisma.AdminProfileOmit
   analyticsEvent?: Prisma.AnalyticsEventOmit
   contactSubmission?: Prisma.ContactSubmissionOmit
+  brandStory?: Prisma.BrandStoryOmit
 }
 
 /* Types for Logging */

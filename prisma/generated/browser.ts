@@ -47,3 +47,8 @@ export type AnalyticsEvent = Prisma.AnalyticsEventModel
  * 
  */
 export type ContactSubmission = Prisma.ContactSubmissionModel
+/**
+ * Model BrandStory
+ * 
+ */
+export type BrandStory = Prisma.BrandStoryModel

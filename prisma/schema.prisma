@@ -93,3 +93,13 @@ model ContactSubmission {
 
   @@map("contact_submissions")
 }
+
+model BrandStory {
+  id         String   @id @default(uuid())
+  fileName   String   @map("file_name")
+  filePath   String   @map("file_path")
+  fileSize   Int      @map("file_size")
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+
+  @@map("brand_story")
+}
