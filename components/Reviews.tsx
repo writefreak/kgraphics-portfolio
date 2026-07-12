@@ -106,7 +106,8 @@ export default function Reviews({ reviews = [] }: ReviewsProps) {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["-25%", "25%"]);
+  // const bgY = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
 
   const scrollByCard = (dir: 1 | -1) => {
     const el = scrollerRef.current;
