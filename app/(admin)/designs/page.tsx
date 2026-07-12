@@ -9,27 +9,25 @@ export default async function DesignsPage() {
     orderBy: { displayOrder: "asc" },
   });
 
-  const designs: Design[] = await Promise.all(
-    rows.map(async (d) => {
-      const { data } = await supabaseAdmin.storage
-        .from("design-images")
-        .createSignedUrl(d.imagePath, 3600);
+  const designs: Design[] = rows.map((d) => {
+    const { data } = supabaseAdmin.storage
+      .from("design-images")
+      .getPublicUrl(d.imagePath);
 
-      return {
-        id: d.id,
-        title: d.title,
-        category: d.category?.name ?? "Uncategorized",
-        imageUrl: data?.signedUrl ?? "",
-        imageAlt: d.imageAlt,
-        caption: d.caption,
-        clientName: d.clientName,
-        behanceUrl: d.behanceUrl,
-        featured: d.isFeatured,
-        displayOrder: d.displayOrder,
-        createdAt: d.createdAt,
-      };
-    }),
-  );
+    return {
+      id: d.id,
+      title: d.title,
+      category: d.category?.name ?? "Uncategorized",
+      imageUrl: data.publicUrl,
+      imageAlt: d.imageAlt,
+      caption: d.caption,
+      clientName: d.clientName,
+      behanceUrl: d.behanceUrl,
+      featured: d.isFeatured,
+      displayOrder: d.displayOrder,
+      createdAt: d.createdAt,
+    };
+  });
 
   return <DesignsPageClient initialDesigns={designs} />;
 }

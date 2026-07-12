@@ -20,27 +20,25 @@ async function getFeaturedDesigns(): Promise<Design[]> {
     include: { category: true },
   });
 
-  return Promise.all(
-    rows.map(async (row) => {
-      const { data } = await supabaseAdmin.storage
-        .from("design-images")
-        .createSignedUrl(row.imagePath, 60 * 60);
+  return rows.map((row) => {
+    const { data } = supabaseAdmin.storage
+      .from("design-images")
+      .getPublicUrl(row.imagePath);
 
-      return {
-        id: row.id,
-        title: row.title,
-        category: row.category?.name ?? "Uncategorized",
-        imageUrl: data?.signedUrl ?? "",
-        imageAlt: row.imageAlt,
-        caption: row.caption,
-        clientName: row.clientName,
-        behanceUrl: row.behanceUrl,
-        featured: row.isFeatured,
-        displayOrder: row.displayOrder,
-        createdAt: row.createdAt,
-      };
-    }),
-  );
+    return {
+      id: row.id,
+      title: row.title,
+      category: row.category?.name ?? "Uncategorized",
+      imageUrl: data.publicUrl,
+      imageAlt: row.imageAlt,
+      caption: row.caption,
+      clientName: row.clientName,
+      behanceUrl: row.behanceUrl,
+      featured: row.isFeatured,
+      displayOrder: row.displayOrder,
+      createdAt: row.createdAt,
+    };
+  });
 }
 
 async function getApprovedReviews(): Promise<Review[]> {
