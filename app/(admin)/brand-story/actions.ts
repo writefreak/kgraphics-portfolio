@@ -5,13 +5,14 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 import { revalidatePath } from "next/cache";
 import type { BrandStory } from "@/lib/types";
 
-export async function getBrandStory(): Promise<BrandStory | null> {
-  const row = await prisma.brandStory.findFirst({
-    orderBy: { uploadedAt: "desc" },
-  });
-
-  if (!row) return null;
-
+function toBrandStory(row: {
+  id: string;
+  fileName: string;
+  filePath: string;
+  fileSize: number;
+  downloadCount: number;
+  uploadedAt: Date;
+}): BrandStory {
   const { data } = supabaseAdmin.storage
     .from("brand-story")
     .getPublicUrl(row.filePath);
@@ -21,9 +22,24 @@ export async function getBrandStory(): Promise<BrandStory | null> {
     fileName: row.fileName,
     fileUrl: data.publicUrl,
     fileSize: row.fileSize,
-    uploadedAt: row.uploadedAt,
     downloadCount: row.downloadCount,
+    uploadedAt: row.uploadedAt,
   };
+}
+
+export async function getBrandStories(): Promise<BrandStory[]> {
+  const rows = await prisma.brandStory.findMany({
+    orderBy: { uploadedAt: "desc" },
+  });
+  return rows.map(toBrandStory);
+}
+
+// Used by the public homepage — always the most recently uploaded PDF
+export async function getLatestBrandStory(): Promise<BrandStory | null> {
+  const row = await prisma.brandStory.findFirst({
+    orderBy: { uploadedAt: "desc" },
+  });
+  return row ? toBrandStory(row) : null;
 }
 
 export async function uploadBrandStory(formData: FormData) {
@@ -33,13 +49,6 @@ export async function uploadBrandStory(formData: FormData) {
   const file = formData.get("file") as File;
   if (!file || file.size === 0) throw new Error("No file provided");
   if (file.type !== "application/pdf") throw new Error("File must be a PDF");
-
-  // Only one brand story PDF ever exists — remove the old one first
-  const existing = await prisma.brandStory.findFirst();
-  if (existing) {
-    await supabaseAdmin.storage.from("brand-story").remove([existing.filePath]);
-    await prisma.brandStory.delete({ where: { id: existing.id } });
-  }
 
   const filePath = `${crypto.randomUUID()}.pdf`;
   const { error: uploadError } = await supabaseAdmin.storage
@@ -58,25 +67,23 @@ export async function uploadBrandStory(formData: FormData) {
   revalidatePath("/brand-story");
 }
 
-export async function deleteBrandStory() {
+export async function deleteBrandStory(id: string) {
   //   const { userId } = await auth();
   //   if (!userId) throw new Error("Unauthorized");
 
-  const existing = await prisma.brandStory.findFirst();
-  if (!existing) return;
+  const existing = await prisma.brandStory.findUniqueOrThrow({
+    where: { id },
+  });
 
   await supabaseAdmin.storage.from("brand-story").remove([existing.filePath]);
-  await prisma.brandStory.delete({ where: { id: existing.id } });
+  await prisma.brandStory.delete({ where: { id } });
 
   revalidatePath("/brand-story");
 }
 
-export async function incrementBrandStoryDownload() {
-  const existing = await prisma.brandStory.findFirst();
-  if (!existing) return;
-
+export async function incrementBrandStoryDownload(id: string) {
   await prisma.brandStory.update({
-    where: { id: existing.id },
+    where: { id },
     data: { downloadCount: { increment: 1 } },
   });
 }

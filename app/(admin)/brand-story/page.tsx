@@ -1,8 +1,8 @@
+import { getBrandStories } from "@/app/(admin)/brand-story/actions";
 import { BrandStoryClient } from "@/components/admin/brand-story-client";
-import { getBrandStory } from "./actions";
 
 export default async function BrandStoryPage() {
-  const brandStory = await getBrandStory();
+  const brandStories = await getBrandStories();
 
-  return <BrandStoryClient initialBrandStory={brandStory} />;
+  return <BrandStoryClient initialBrandStories={brandStories} />;
 }

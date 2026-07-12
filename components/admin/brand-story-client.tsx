@@ -16,20 +16,23 @@ import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import type { BrandStory } from "@/lib/types";
 import {
   deleteBrandStory,
-  incrementBrandStoryDownload,
   uploadBrandStory,
+  incrementBrandStoryDownload,
 } from "@/app/(admin)/brand-story/actions";
 import { ConfirmActionButton } from "../ui/confirm-action";
 
 interface BrandStoryClientProps {
-  initialBrandStory: BrandStory | null;
+  initialBrandStories: BrandStory[];
 }
 
-export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
-  const [brandStory, setBrandStory] = useState(initialBrandStory);
+export function BrandStoryClient({
+  initialBrandStories,
+}: BrandStoryClientProps) {
+  const [brandStories, setBrandStories] = useState(initialBrandStories);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const processFile = (file: File | undefined) => {
@@ -47,14 +50,6 @@ export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
     startTransition(async () => {
       try {
         await uploadBrandStory(formData);
-        setBrandStory({
-          id: crypto.randomUUID(),
-          fileName: file.name,
-          fileUrl: "",
-          fileSize: file.size,
-          downloadCount: 0,
-          uploadedAt: new Date(),
-        });
         window.location.reload();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Upload failed.");
@@ -74,15 +69,22 @@ export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
     processFile(e.dataTransfer.files?.[0]);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (id: string) => {
+    setDeletingId(id);
     startTransition(async () => {
       try {
-        await deleteBrandStory();
-        setBrandStory(null);
+        await deleteBrandStory(id);
+        setBrandStories((prev) => prev.filter((b) => b.id !== id));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Delete failed.");
+      } finally {
+        setDeletingId(null);
       }
     });
+  };
+
+  const handleDownloadClick = (id: string) => {
+    incrementBrandStoryDownload(id);
   };
 
   const formatSize = (bytes: number) => {
@@ -108,84 +110,93 @@ export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
           variants={fadeUp}
           className="mt-3 max-w-md text-sm text-ink/65"
         >
-          Upload the PDF that tells K-Graphics&apos; story. Uploading a new file
-          replaces the current one.
+          Upload brand story PDFs. The most recently uploaded one is what shows
+          on the public site, older ones stay archived here.
         </motion.p>
 
-        {brandStory ? (
-          <motion.div variants={fadeUp} className="mt-8 md:mt-10">
-            <div className="overflow-hidden rounded-2xl border border-ink/10 bg-mist/40">
-              {/* File header */}
-              <div className="flex flex-col gap-4 border-b border-ink/10 p-5 sm:flex-row sm:items-center sm:justify-between md:p-6">
-                <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-ink text-paper md:h-12 md:w-12">
-                    <FileText size={20} />
+        {brandStories.length > 0 ? (
+          <motion.div variants={fadeUp} className="mt-8 space-y-4 md:mt-10">
+            {brandStories.map((story, i) => (
+              <div
+                key={story.id}
+                className="overflow-hidden rounded-2xl border border-ink/10 bg-mist/40"
+              >
+                <div className="flex flex-col gap-4 border-b border-ink/10 p-5 sm:flex-row sm:items-center sm:justify-between md:p-6">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-ink text-paper md:h-12 md:w-12">
+                      <FileText size={20} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-ink md:text-base">
+                        {story.fileName}
+                      </p>
+                      <p className="mt-0.5 text-xs text-ink/55">
+                        {i === 0 ? "Live on public site" : "Archived"}
+                      </p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-ink md:text-base">
-                      {brandStory.fileName}
-                    </p>
-                    <p className="mt-0.5 text-xs text-ink/55">
-                      Current brand story PDF
-                    </p>
+
+                  <div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
+                    <a
+                      href={`${story.fileUrl}?download=${encodeURIComponent(story.fileName)}`}
+                      aria-label="Download PDF"
+                      onClick={() => handleDownloadClick(story.id)}
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white transition-colors hover:bg-accent"
+                    >
+                      <Download size={16} />
+                    </a>
+                    <ConfirmActionButton
+                      onConfirm={() => handleDelete(story.id)}
+                      title="Delete this PDF?"
+                      description="This removes it permanently. This can't be undone."
+                      confirmLabel={
+                        isPending && deletingId === story.id
+                          ? "Deleting…"
+                          : "Delete"
+                      }
+                      destructive
+                      ariaLabel="Delete PDF"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors hover:border-red-500 hover:text-red-500 disabled:opacity-50"
+                      icon={
+                        isPending && deletingId === story.id ? (
+                          <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                          <Trash2 size={16} />
+                        )
+                      }
+                    />
                   </div>
                 </div>
 
-                <div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
-                  <a
-                    href={`${brandStory.fileUrl}?download=${encodeURIComponent(brandStory.fileName)}`}
-                    aria-label="Download PDF"
-                    onClick={() => incrementBrandStoryDownload()}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white transition-colors hover:bg-accent"
-                  >
-                    <Download size={16} />
-                  </a>
-                  <ConfirmActionButton
-                    onConfirm={handleDelete}
-                    title="Delete brand story?"
-                    description="This removes the current PDF permanently. This can't be undone."
-                    confirmLabel={isPending ? "Deleting…" : "Delete"}
-                    destructive
-                    ariaLabel="Delete PDF"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors hover:border-red-500 hover:text-red-500 disabled:opacity-50"
-                    icon={
-                      isPending ? (
-                        <Loader2 size={16} className="animate-spin" />
-                      ) : (
-                        <Trash2 size={16} />
-                      )
-                    }
-                  />
+                <div className="grid grid-cols-3 divide-x divide-ink/10">
+                  <div className="flex flex-col items-center gap-1.5 p-4 text-center md:p-5">
+                    <HardDrive size={16} className="text-ink/40" />
+                    <p className="text-sm font-semibold text-ink md:text-base">
+                      {formatSize(story.fileSize)}
+                    </p>
+                    <p className="text-[11px] text-ink/50 md:text-xs">Size</p>
+                  </div>
+                  <div className="flex flex-col items-center gap-1.5 p-4 text-center md:p-5">
+                    <CalendarDays size={16} className="text-ink/40" />
+                    <p className="text-sm font-semibold text-ink md:text-base">
+                      {new Date(story.uploadedAt).toLocaleDateString()}
+                    </p>
+                    <p className="text-[11px] text-ink/50 md:text-xs">
+                      Uploaded
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center gap-1.5 p-4 text-center md:p-5">
+                    <ArrowDownToLine size={16} className="text-ink/40" />
+                    <p className="text-sm font-semibold text-ink md:text-base">
+                      {story.downloadCount}
+                    </p>
+                    <p className="text-[11px] text-ink/50 md:text-xs">
+                      Download{story.downloadCount === 1 ? "" : "s"}
+                    </p>
+                  </div>
                 </div>
               </div>
-
-              {/* Stats row */}
-              <div className="grid grid-cols-3 divide-x divide-ink/10">
-                <div className="flex flex-col items-center gap-1.5 p-4 text-center md:p-5">
-                  <HardDrive size={16} className="text-ink/40" />
-                  <p className="text-sm font-semibold text-ink md:text-base">
-                    {formatSize(brandStory.fileSize)}
-                  </p>
-                  <p className="text-[11px] text-ink/50 md:text-xs">Size</p>
-                </div>
-                <div className="flex flex-col items-center gap-1.5 p-4 text-center md:p-5">
-                  <CalendarDays size={16} className="text-ink/40" />
-                  <p className="text-sm font-semibold text-ink md:text-base">
-                    {new Date(brandStory.uploadedAt).toLocaleDateString()}
-                  </p>
-                  <p className="text-[11px] text-ink/50 md:text-xs">Uploaded</p>
-                </div>
-                <div className="flex flex-col items-center gap-1.5 p-4 text-center md:p-5">
-                  <ArrowDownToLine size={16} className="text-ink/40" />
-                  <p className="text-sm font-semibold text-ink md:text-base">
-                    {brandStory.downloadCount}
-                  </p>
-                  <p className="text-[11px] text-ink/50 md:text-xs">
-                    Download{brandStory.downloadCount === 1 ? "" : "s"}
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </motion.div>
         ) : (
           <motion.div
@@ -196,7 +207,7 @@ export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
               <FileText size={20} />
             </div>
             <p className="mt-4 text-sm text-ink/55">
-              No brand story PDF uploaded yet.
+              No brand story PDFs uploaded yet.
             </p>
           </motion.div>
         )}
@@ -224,7 +235,7 @@ export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
               : "border-ink/15 hover:border-ink/30 hover:bg-ink/5"
           }`}
         >
-          {isPending ? (
+          {isPending && !deletingId ? (
             <Loader2 size={22} className="animate-spin text-ink" />
           ) : (
             <Upload
@@ -233,11 +244,7 @@ export function BrandStoryClient({ initialBrandStory }: BrandStoryClientProps) {
             />
           )}
           <span className="text-sm font-semibold text-ink">
-            {isPending
-              ? "Uploading…"
-              : brandStory
-                ? "Replace PDF"
-                : "Upload PDF"}
+            {isPending && !deletingId ? "Uploading…" : "Upload New PDF"}
           </span>
           <span className="text-xs text-ink/50">
             Drag and drop, or click to browse

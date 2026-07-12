@@ -5,17 +5,18 @@ import { motion } from "framer-motion";
 import { Download } from "lucide-react";
 import { Container, SectionLabel } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
+
+import type { BrandStory as BrandStoryType } from "@/lib/types";
 import {
-  getBrandStory,
+  getLatestBrandStory,
   incrementBrandStoryDownload,
 } from "@/app/(admin)/brand-story/actions";
-import type { BrandStory as BrandStoryType } from "@/lib/types";
 
 export default function BrandStory() {
   const [brandStory, setBrandStory] = useState<BrandStoryType | null>(null);
 
   useEffect(() => {
-    getBrandStory()
+    getLatestBrandStory()
       .then(setBrandStory)
       .catch(() => setBrandStory(null));
   }, []);
@@ -46,7 +47,7 @@ export default function BrandStory() {
                     : "#"
                 }
                 onClick={() => {
-                  if (brandStory) incrementBrandStoryDownload();
+                  if (brandStory) incrementBrandStoryDownload(brandStory.id);
                 }}
                 className="inline-flex items-center gap-2 rounded-2xl bg-ink px-6 py-3.5 text-xs md:text-sm font-semibold text-paper transition-colors hover:bg-accent"
               >
