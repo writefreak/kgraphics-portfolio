@@ -5,6 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Container } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import { useRef, useState } from "react";
+import Link from "next/link";
 
 const STATS = [
   { value: "", label: "" },
@@ -93,17 +94,25 @@ export default function Hero() {
             variants={fadeUp}
             className="pt-8 md:pt-10 flex flex-wrap gap-3"
           >
-            <button className="group inline-flex items-center gap-2 rounded-2xl bg-ink px-6 py-3 text-sm font-semibold text-paper transition-colors hover:bg-accent">
+            <a
+              href="https://wa.me/2348129460632"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 rounded-2xl bg-ink px-6 py-3 text-sm font-semibold text-paper transition-colors hover:bg-accent"
+            >
               Let&apos;s Connect
               <ArrowUpRight
                 size={16}
                 className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               />
-            </button>
+            </a>
 
-            <button className="inline-flex items-center gap-2 rounded-2xl  px-6 py-3 text-sm font-semibold text-ink border border-ink">
+            <Link
+              href="/portfolio"
+              className="inline-flex items-center gap-2 rounded-2xl  px-6 py-3 text-sm font-semibold text-ink border border-ink"
+            >
               See Our Work
-            </button>
+            </Link>
           </motion.div>
         </motion.div>
 
