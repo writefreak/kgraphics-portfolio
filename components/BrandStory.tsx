@@ -5,7 +5,10 @@ import { motion } from "framer-motion";
 import { Download } from "lucide-react";
 import { Container, SectionLabel } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
-import { getBrandStory } from "@/app/(admin)/brand-story/actions";
+import {
+  getBrandStory,
+  incrementBrandStoryDownload,
+} from "@/app/(admin)/brand-story/actions";
 import type { BrandStory as BrandStoryType } from "@/lib/types";
 
 export default function BrandStory() {
