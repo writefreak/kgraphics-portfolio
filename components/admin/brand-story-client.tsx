@@ -119,7 +119,7 @@ export function BrandStoryClient({
             {brandStories.map((story, i) => (
               <div
                 key={story.id}
-                className="overflow-hidden rounded-2xl border border-ink/10 bg-mist/40"
+                className="overflow-hidden rounded-2xl border border-ink/10 bg-white"
               >
                 <div className="flex flex-col gap-4 border-b border-ink/10 p-5 sm:flex-row sm:items-center sm:justify-between md:p-6">
                   <div className="flex min-w-0 items-center gap-3">
