@@ -93,7 +93,7 @@ export function BrandStoryClient({
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-20">
+    <div className="mx-auto max-w-3xl md:max-w-6xl px-4 py-12 sm:px-6 md:py-20">
       <motion.div
         initial="hidden"
         whileInView="visible"
