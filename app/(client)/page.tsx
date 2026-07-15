@@ -10,6 +10,7 @@ import { Footer } from "@/components/shared/Footer";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import type { Design, Review } from "@/lib/types";
+export const dynamic = "force-dynamic";
 
 // Assumption (unspecified): homepage carousel shows featured designs only,
 // ordered by displayOrder. Drop the `where` clause if you want all designs.

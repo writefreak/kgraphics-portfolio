@@ -2,6 +2,8 @@ import { DashboardClient } from "@/components/admin/dashboard/dashboard-page";
 import { prisma } from "@/lib/prisma";
 import { CategoryCount, Review } from "@/lib/types";
 import React from "react";
+
+export const dynamic = "force-dynamic";
 const CATEGORY_COLORS = [
   "var(--ink)",
   "var(--accent)",
