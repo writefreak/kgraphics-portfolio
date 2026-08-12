@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Container } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import Card, { CardItem } from "./ui/work-card";
@@ -44,10 +44,12 @@ const SERVICES: CardItem[] = [
     image: "/2.jpg",
   },
 ];
+
 export default function Services() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const [activeService, setActiveService] = useState<CardItem | null>(null);
 
   const updateEdges = () => {
     const el = trackRef.current;
@@ -67,6 +69,24 @@ export default function Services() {
       window.removeEventListener("resize", updateEdges);
     };
   }, []);
+
+  // Lock scroll + close on Escape while the dialog is open
+  useEffect(() => {
+    if (!activeService) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveService(null);
+    };
+    document.addEventListener("keydown", onKeyDown);
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [activeService]);
 
   const scrollBy = (dir: 1 | -1) => {
     const el = trackRef.current;
@@ -108,7 +128,21 @@ export default function Services() {
         className="pt-14 flex gap-4 md:gap-5 overflow-x-auto mx-6 md:mx-14 pb-2 snap-x snap-mandatory scroll-smooth scrollbar-none  [&::-webkit-scrollbar]:hidden"
       >
         {SERVICES.map((service) => (
-          <Card key={service.id} item={service} />
+          <div
+            key={service.id}
+            role="button"
+            tabIndex={0}
+            onClick={() => setActiveService(service)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setActiveService(service);
+              }
+            }}
+            className="cursor-pointer"
+          >
+            <Card item={service} />
+          </div>
         ))}
       </div>
 
@@ -126,13 +160,68 @@ export default function Services() {
             onClick={() => scrollBy(1)}
             disabled={atEnd}
             aria-label="Scroll right"
-            // className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink transition-colors hover:bg-mist disabled:opacity-30 disabled:pointer-events-none"
             className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-white hover:border hover:border-ink hover:text-ink transition-colors hover:bg-mist disabled:opacity-30 disabled:pointer-events-none"
           >
             <ChevronRight size={18} />
           </button>
         </div>
       </Container>
+
+      <AnimatePresence>
+        {activeService && (
+          <motion.div
+            key="service-dialog-backdrop"
+            className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm p-0 md:p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setActiveService(null)}
+          >
+            <motion.div
+              key="service-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="service-dialog-title"
+              className="relative w-full max-w-md md:max-w-lg max-h-[85vh] md:max-h-[80vh] overflow-y-auto rounded-t-2xl md:rounded-2xl bg-white shadow-2xl"
+              initial={{ opacity: 0, y: 40, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.98 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setActiveService(null)}
+                aria-label="Close"
+                className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink shadow-md transition-colors hover:bg-white"
+              >
+                <X size={16} />
+              </button>
+
+              <div className="flex max-h-[40vh] md:max-h-[45vh] w-full items-center justify-center overflow-hidden bg-mist">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={activeService.image}
+                  alt={activeService.name}
+                  className="max-h-[40vh] md:max-h-[45vh] w-full object-contain"
+                />
+              </div>
+
+              <div className="p-5 md:p-6">
+                <h3
+                  id="service-dialog-title"
+                  className="mt-1.5 font-display text-xl font-bold tracking-tight text-ink md:text-2xl"
+                >
+                  {activeService.name}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+                  {activeService.desc}
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
