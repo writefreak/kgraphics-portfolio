@@ -179,36 +179,37 @@ export default function Portfolio({ designs = [] }: PortfolioProps) {
                   : "group relative aspect-4/6 md:aspect-4/5 w-[220px] flex-shrink-0 snap-start cursor-pointer overflow-hidden rounded-2xl sm:w-[280px] md:w-[320px]";
 
                 return (
-                  <DialogTrigger asChild key={`${design.id}-${i}`}>
-                    <div
-                      onClick={() => setSelectedImage(design.imageUrl)}
-                      className={cardClassName}
-                    >
-                      <img
-                        src={design.imageUrl}
-                        alt={design.imageAlt}
-                        width={320}
-                        height={400}
-                        loading="eager"
-                        decoding="async"
-                        className="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-ink/0 transition-colors duration-300 [@media(hover:hover)]:group-hover:bg-ink/20" />
+                  <Link
+                    href={`/portfolio/${design.id}`}
+                    key={`${design.id}-${i}`}
+                    className={cardClassName}
+                    suppressHydrationWarning
+                  >
+                    <img
+                      src={design.imageUrl}
+                      alt={design.imageAlt}
+                      width={320}
+                      height={400}
+                      loading="eager"
+                      decoding="async"
+                      className="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-ink/0 transition-colors duration-300 [@media(hover:hover)]:group-hover:bg-ink/20" />
 
-                      {design.behanceUrl && (
-                        <a
-                          href={design.behanceUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          aria-label="View on Behance"
-                          className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-ink/70 text-white opacity-0 transition-opacity duration-200 [@media(hover:hover)]:group-hover:opacity-100"
-                        >
-                          <ArrowUpRight size={14} />
-                        </a>
-                      )}
-                    </div>
-                  </DialogTrigger>
+                    {/* {design.behanceUrl && (
+                      <a
+                        suppressHydrationWarning
+                        href={design.behanceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label="View on Behance"
+                        className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-ink/70 text-white opacity-0 transition-opacity duration-200 [@media(hover:hover)]:group-hover:opacity-100"
+                      >
+                        <ArrowUpRight size={14} />
+                      </a>
+                    )} */}
+                  </Link>
                 );
               })}
             </motion.div>
