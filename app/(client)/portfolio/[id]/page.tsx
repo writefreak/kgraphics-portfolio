@@ -76,29 +76,31 @@ const page = async ({ params }: PageProps) => {
           </div>
 
           <div className="flex flex-col justify-center">
-            <span className="text-xs font-medium bg-accent text-paper px-2 py-1 rounded-full w-fit">
+            <span className="text-xs font-medium bg-[#030142]/20 text-ink px-3 py-1 rounded-full w-fit">
               {design.category}
             </span>
-            <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+            <h1 className="mt-5 font-display text-2xl font-bold tracking-tight text-ink sm:text-4xl">
               {design.title}
             </h1>
             {design.caption && (
-              <p className="mt-4 text-sm text-ink/65 sm:text-base">
+              <p className="py-4 pb-6 text-xs text-neutral-700 md:text-sm">
                 {design.caption}
               </p>
             )}
-            <div className="pt-5 border-t border-t-gray-200" />
-            {design.behanceUrl && (
-              <a
-                href={design.behanceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-colors hover:bg-mist hover:text-ink hover:border hover:border-ink"
-              >
-                View on Behance
-                <ExternalLink size={14} />
-              </a>
-            )}
+            <div className="pt-5 md:pt-8 border-t border-t-gray-200" />
+            <div className="">
+              {design.behanceUrl && (
+                <a
+                  href={design.behanceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-fit items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-colors hover:bg-mist hover:text-ink hover:border hover:border-ink"
+                >
+                  View on Behance
+                  <ExternalLink size={14} />
+                </a>
+              )}
+            </div>
           </div>
         </div>
       </Container>
