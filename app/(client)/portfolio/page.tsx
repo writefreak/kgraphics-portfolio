@@ -5,6 +5,7 @@ import React from "react";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import type { Design } from "@/lib/types";
+export const dynamic = "force-dynamic";
 async function getAllDesigns(): Promise<Design[]> {
   const rows = await prisma.design.findMany({
     orderBy: { displayOrder: "asc" },
