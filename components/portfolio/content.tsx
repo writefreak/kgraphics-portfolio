@@ -1,9 +1,7 @@
 "use client";
-import React from "react";
 
-import { useMemo, useRef } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Container } from "@/components/Container";
 import BackButton from "../ui/back-button";
 import type { Design } from "@/lib/types";
@@ -12,9 +10,11 @@ interface ContentProps {
   designs: Design[];
 }
 
+const INITIAL_VISIBLE_COUNT = 6;
+
 const Content = ({ designs = [] }: ContentProps) => {
-  const [activeCategory, setActiveCategory] = React.useState("All");
-  const trackRef = useRef<HTMLDivElement>(null);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [showAll, setShowAll] = useState(false);
 
   const categories = useMemo(
     () => ["All", ...Array.from(new Set(designs.map((d) => d.category)))],
@@ -29,13 +29,15 @@ const Content = ({ designs = [] }: ContentProps) => {
     [designs, activeCategory],
   );
 
-  const scrollByAmount = (dir: 1 | -1) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.children[0] as HTMLElement | undefined;
-    const gap = 20;
-    const step = (card?.offsetWidth || 280) + gap;
-    el.scrollBy({ left: dir * step * 2, behavior: "smooth" });
+  const visibleItems = useMemo(
+    () =>
+      showAll ? filteredItems : filteredItems.slice(0, INITIAL_VISIBLE_COUNT),
+    [filteredItems, showAll],
+  );
+
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+    setShowAll(false);
   };
 
   return (
@@ -61,7 +63,7 @@ const Content = ({ designs = [] }: ContentProps) => {
               <button
                 key={category}
                 type="button"
-                onClick={() => setActiveCategory(category)}
+                onClick={() => handleCategoryChange(category)}
                 className={`flex-shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-xs md:text-sm font-medium transition-colors ${
                   isActive
                     ? "bg-ink text-paper"
@@ -74,16 +76,13 @@ const Content = ({ designs = [] }: ContentProps) => {
           })}
         </div>
 
-        <div className="relative mt-10">
-          <div
-            ref={trackRef}
-            className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 sm:gap-5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
-            {filteredItems.map((item) => (
+        <div className="mt-10">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 sm:gap-6">
+            {visibleItems.map((item) => (
               <Link
                 key={item.id}
                 href={`/portfolio/${item.id}`}
-                className="group relative md:aspect-4/5 aspect-4/6 w-[220px] flex-shrink-0 snap-start overflow-hidden rounded-2xl sm:w-[280px] md:w-[320px]"
+                className="group relative aspect-4/5 w-full overflow-hidden rounded-2xl"
               >
                 <img
                   src={item.imageUrl}
@@ -105,29 +104,22 @@ const Content = ({ designs = [] }: ContentProps) => {
                 </div>
               </Link>
             ))}
-
-            {filteredItems.length === 0 && (
-              <p className="py-10 text-sm text-ink/50">
-                No work in this category yet.
-              </p>
-            )}
           </div>
 
-          {filteredItems.length > 0 && (
-            <div className="mt-6 flex items-center justify-end gap-3">
+          {filteredItems.length === 0 && (
+            <p className="py-10 text-sm text-ink/50">
+              No work in this category yet.
+            </p>
+          )}
+
+          {filteredItems.length > INITIAL_VISIBLE_COUNT && (
+            <div className="mt-10 flex justify-center">
               <button
-                onClick={() => scrollByAmount(-1)}
-                aria-label="Scroll left"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-paper transition-colors hover:border hover:border-ink hover:bg-mist hover:text-ink md:h-10 md:w-10"
+                type="button"
+                onClick={() => setShowAll((prev) => !prev)}
+                className="rounded-full bg-ink px-6 py-3 text-xs md:text-sm font-medium text-paper transition-colors hover:bg-ink/80"
               >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                onClick={() => scrollByAmount(1)}
-                aria-label="Scroll right"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-paper transition-colors hover:border hover:border-ink hover:bg-mist hover:text-ink md:h-10 md:w-10"
-              >
-                <ChevronRight size={18} />
+                {showAll ? "See less" : "See more"}
               </button>
             </div>
           )}
