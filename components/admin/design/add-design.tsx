@@ -335,7 +335,7 @@ export function AddDesignDialog({
                   <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div className="flex flex-col gap-2">
                       <label className="text-sm font-medium text-ink">
-                        Client name{" "}
+                        Client/Company name{" "}
                         <span className="text-ink/40">(optional)</span>
                       </label>
                       <Input
