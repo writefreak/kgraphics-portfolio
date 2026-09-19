@@ -100,7 +100,7 @@ export default function Portfolio({ designs = [] }: PortfolioProps) {
   };
 
   return (
-    <section id="portfolio" className="pb-32 pt-16 md:pt-28 md:pb-40">
+    <section id="portfolio" className="pb-32 pt-16 md:pt-20 md:pb-40">
       <Container>
         <motion.div
           initial="hidden"
