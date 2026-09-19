@@ -1,6 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useVelocity,
+  useTransform,
+  useSpring,
+  useAnimationFrame,
+  useMotionValue,
+} from "framer-motion";
 import {
   Feather,
   Fingerprint,
@@ -8,8 +17,7 @@ import {
   MessagesSquare,
   Heart,
 } from "lucide-react";
-import { Container, SectionLabel } from "./Container";
-import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
+import { Container } from "./Container";
 
 const VALUES = [
   {
@@ -39,58 +47,82 @@ const VALUES = [
   },
 ];
 
-export default function WhyChooseUs() {
-  return (
-    <section id="about" className="pb-20 pt-0">
-      <Container>
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          variants={stagger()}
-          className="max-w-xl"
-        >
-          <motion.h2
-            variants={fadeUp}
-            className="mt-4 font-display text-3xl font-bold tracking-tight text-ink md:text-4xl"
-          >
-            Our designs speak with <br className="hidden md:block" /> clarity
-            and purpose
-          </motion.h2>
-          <motion.p
-            variants={fadeUp}
-            className="mt-4 text-xs md:text-sm text-ink/65"
-          >
-            We give life to your ideas through excellent designs that blend soul{" "}
-            <br className="hidden md:block" />
-            and aesthetics in a way that reflects the uniqueness of our clients
-          </motion.p>
-        </motion.div>
+// Duplicated so the track can loop seamlessly
+const LOOP_VALUES = [...VALUES, ...VALUES];
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          variants={stagger(0.06)}
-          className="mt-14 grid gap-2 overflow-hidden  rounded-2xl sm:grid-cols-2 lg:grid-cols-5"
+function ValueCard({ value }: { value: (typeof VALUES)[number] }) {
+  return (
+    <div className="flex w-[280px] shrink-0 flex-col gap-4 rounded-2xl bg-[#030142] p-7">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/20">
+        <value.icon size={18} className="text-white" />
+      </div>
+      <h3 className="font-display text-base font-semibold text-white">
+        {value.title}
+      </h3>
+      <p className="text-xs text-white/70 md:text-sm">{value.desc}</p>
+    </div>
+  );
+}
+
+export default function WhyChooseUs() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const baseX = useMotionValue(0);
+
+  const { scrollY } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const smoothVelocity = useSpring(scrollVelocity, {
+    damping: 40,
+    stiffness: 300,
+  });
+  const velocityFactor = useTransform(
+    smoothVelocity,
+    [-2000, 0, 2000],
+    [-6, 0, 6],
+    {
+      clamp: false,
+    },
+  );
+
+  useAnimationFrame((_, delta) => {
+    // constant slow drift to the left, boosted/reversed by scroll velocity
+    const baseSpeed = 0.4; // px per ms, always moving
+    let moveBy = baseSpeed * (delta / 16.6);
+    moveBy += moveBy * velocityFactor.get();
+
+    let next = baseX.get() - moveBy;
+
+    // loop the track: reset once we've scrolled past one full set of cards
+    const trackWidth = trackRef.current ? trackRef.current.scrollWidth / 2 : 0;
+    if (trackWidth > 0) {
+      if (next <= -trackWidth) next += trackWidth;
+      if (next > 0) next -= trackWidth;
+    }
+
+    baseX.set(next);
+  });
+
+  const x = useTransform(baseX, (v) => `${v}px`);
+
+  return (
+    <section id="about">
+      <Container className="relative overflow-hidden ">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-3xl md:text-4xl max-w-sm font-display font-bold text-ink leading-none mb-10"
         >
-          {VALUES.map((value) => (
-            <motion.div
-              key={value.title}
-              variants={fadeUp}
-              className="flex flex-col gap-4 bg-[#030142] p-7"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/20">
-                <value.icon size={18} className="text-white" />
-              </div>
-              <h3 className="font-display text-base font-semibold text-white">
-                {value.title}
-              </h3>
-              <p className="md:text-sm text-xs text-white/70">{value.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+          Our designs speak with clarity and purpose
+        </motion.h1>
+        <div className="overflow-hidden rounded-2xl">
+          <motion.div ref={trackRef} style={{ x }} className="flex w-max gap-2">
+            {LOOP_VALUES.map((value, i) => (
+              <ValueCard key={`${value.title}-${i}`} value={value} />
+            ))}
+          </motion.div>
+        </div>
       </Container>
+      {/* </Container> */}
     </section>
   );
 }

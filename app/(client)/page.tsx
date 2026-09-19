@@ -10,6 +10,8 @@ import { Footer } from "@/components/shared/Footer";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import type { Design, Review } from "@/lib/types";
+import TestHero from "@/components/test-hero";
+import AboutMe from "@/components/about";
 export const dynamic = "force-dynamic";
 
 // Assumption (unspecified): homepage carousel shows featured designs only,
@@ -69,9 +71,11 @@ export default async function Home() {
   return (
     <>
       <main>
-        <Hero />
+        {/* <Hero /> */}
+        <TestHero />
+        <AboutMe />
+        {/* <WhyChooseUs /> */}
         <Services />
-        <WhyChooseUs />
         <Portfolio designs={designs} />
         <Reviews reviews={reviews} />
         <BrandStory />

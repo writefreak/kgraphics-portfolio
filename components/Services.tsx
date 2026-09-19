@@ -96,7 +96,10 @@ export default function Services() {
   };
 
   return (
-    <section id="services" className="py-24 md:py-32">
+    <section
+      id="services"
+      className="pb-24 pt-12 md:pt-12 md:pb-28 border-y border-neutral-100"
+    >
       <Container>
         <motion.div
           initial="hidden"
@@ -115,10 +118,11 @@ export default function Services() {
 
           <motion.p
             variants={fadeUp}
-            className="mt-4 md:text-sm text-xs text-neutral-600"
+            className="mt-4 md:text-sm max-w-sm text-xs text-neutral-600"
           >
-            Our wide range of creative solutions we’ve crafted to elevate brands
-            like yours.
+            {" "}
+            We bring strategy and creativity together to create work that is
+            purposeful, distinctive and built around your needs.
           </motion.p>
         </motion.div>
       </Container>
