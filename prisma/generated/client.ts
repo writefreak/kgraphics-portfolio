@@ -76,3 +76,8 @@ export type ContactSubmission = Prisma.ContactSubmissionModel
  * 
  */
 export type BrandStory = Prisma.BrandStoryModel
+/**
+ * Model CaseStudy
+ * 
+ */
+export type CaseStudy = Prisma.CaseStudyModel

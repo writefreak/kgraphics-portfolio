@@ -390,7 +390,8 @@ export const ModelName = {
   AdminProfile: 'AdminProfile',
   AnalyticsEvent: 'AnalyticsEvent',
   ContactSubmission: 'ContactSubmission',
-  BrandStory: 'BrandStory'
+  BrandStory: 'BrandStory',
+  CaseStudy: 'CaseStudy'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -406,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "category" | "design" | "review" | "adminProfile" | "analyticsEvent" | "contactSubmission" | "brandStory"
+    modelProps: "category" | "design" | "review" | "adminProfile" | "analyticsEvent" | "contactSubmission" | "brandStory" | "caseStudy"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -928,6 +929,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CaseStudy: {
+      payload: Prisma.$CaseStudyPayload<ExtArgs>
+      fields: Prisma.CaseStudyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CaseStudyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CaseStudyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        findFirst: {
+          args: Prisma.CaseStudyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CaseStudyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        findMany: {
+          args: Prisma.CaseStudyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>[]
+        }
+        create: {
+          args: Prisma.CaseStudyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        createMany: {
+          args: Prisma.CaseStudyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CaseStudyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>[]
+        }
+        delete: {
+          args: Prisma.CaseStudyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        update: {
+          args: Prisma.CaseStudyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        deleteMany: {
+          args: Prisma.CaseStudyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CaseStudyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CaseStudyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>[]
+        }
+        upsert: {
+          args: Prisma.CaseStudyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        aggregate: {
+          args: Prisma.CaseStudyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCaseStudy>
+        }
+        groupBy: {
+          args: Prisma.CaseStudyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CaseStudyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CaseStudyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CaseStudyCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1055,6 +1130,23 @@ export const BrandStoryScalarFieldEnum = {
 export type BrandStoryScalarFieldEnum = (typeof BrandStoryScalarFieldEnum)[keyof typeof BrandStoryScalarFieldEnum]
 
 
+export const CaseStudyScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  slug: 'slug',
+  excerpt: 'excerpt',
+  coverImageUrl: 'coverImageUrl',
+  sections: 'sections',
+  published: 'published',
+  isFeatured: 'isFeatured',
+  displayOrder: 'displayOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CaseStudyScalarFieldEnum = (typeof CaseStudyScalarFieldEnum)[keyof typeof CaseStudyScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1069,6 +1161,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1309,6 +1408,7 @@ export type GlobalOmitConfig = {
   analyticsEvent?: Prisma.AnalyticsEventOmit
   contactSubmission?: Prisma.ContactSubmissionOmit
   brandStory?: Prisma.BrandStoryOmit
+  caseStudy?: Prisma.CaseStudyOmit
 }
 
 /* Types for Logging */

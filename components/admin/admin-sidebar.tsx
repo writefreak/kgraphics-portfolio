@@ -12,6 +12,7 @@ import {
   LogOut,
   X,
   Loader2,
+  Briefcase,
 } from "lucide-react";
 import {
   Sidebar,
@@ -38,6 +39,7 @@ const MENU = [
     icon: MessageSquareText,
   },
   { title: "Designs", url: "/designs", icon: ImageIcon },
+  { title: "Case Studies", url: "/case-studies", icon: Briefcase },
   { title: "Brand Story", url: "/brand-story", icon: FileText },
 ];
 

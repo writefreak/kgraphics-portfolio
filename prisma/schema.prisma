@@ -104,3 +104,19 @@ model BrandStory {
 
   @@map("brand_story")
 }
+
+model CaseStudy {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title          String
+  slug           String   @unique
+  excerpt        String?
+  coverImageUrl  String?  @map("cover_image_url")
+  sections       Json     @default("[]")
+  published      Boolean  @default(false)
+  isFeatured     Boolean  @default(false) @map("is_featured")
+  displayOrder   Int      @default(0) @map("display_order")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("case_studies")
+}
