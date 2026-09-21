@@ -43,7 +43,7 @@ export function CaseStudiesSearch({ caseStudies }: CaseStudiesSearchProps) {
             No case studies match &ldquo;{query}&rdquo;.
           </p>
         ) : (
-          <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-3">
             {filteredStudies.map((study) => (
               <CaseStudyCard key={study.id} study={study} />
             ))}

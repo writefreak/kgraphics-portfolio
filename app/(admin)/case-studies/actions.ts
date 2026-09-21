@@ -52,6 +52,7 @@ export async function listCaseStudies() {
   return prisma.caseStudy.findMany({
     select: {
       id: true,
+      excerpt: true,
       title: true,
       slug: true,
       coverImageUrl: true,

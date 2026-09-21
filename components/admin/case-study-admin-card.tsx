@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ArrowUpRight } from "lucide-react";
 
 export interface CaseStudyItem {
   id: string;
@@ -18,17 +17,20 @@ interface CaseStudyCardProps {
   showExcerpt?: boolean;
 }
 
-export function CaseStudyCard({
+export function CaseStudyAdminCard({
   study,
   className,
   description,
-  showExcerpt = false,
+  showExcerpt = true,
 }: CaseStudyCardProps) {
+  // Fall back to description prop if study.excerpt is null/undefined
+  const contentExcerpt = study?.excerpt || description;
+
   return (
     <Link
       href={`/case-study/${study.slug}`}
       className={cn(
-        "group flex flex-col w-full shadow-xs border border-gray-100 rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer",
+        "group flex flex-col w-full shadow-xs border bg-white border-gray-100 rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer",
         className,
       )}
     >
@@ -50,13 +52,13 @@ export function CaseStudyCard({
 
       {/* Content Below Image */}
       <div className="flex flex-col gap-1 p-4">
-        <h2 className="font-display min-w-0 max-w-sm text-base sm:text-xl font-bold text-ink leading-snug transition-colors group-hover:text-accent">
+        <h2 className="font-display text-base font-bold text-ink leading-snug transition-colors group-hover:text-accent line-clamp-1 truncate">
           {study.title}
         </h2>
 
-        {showExcerpt && study.excerpt && (
-          <p className="text-xs sm:text-sm text-neutral-400 line-clamp-2 leading-relaxed">
-            {study.excerpt} {description ? `|| ${description}` : ""}
+        {showExcerpt && (
+          <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed">
+            {contentExcerpt ? contentExcerpt : "No excerpt provided."}
           </p>
         )}
       </div>
@@ -64,4 +66,4 @@ export function CaseStudyCard({
   );
 }
 
-export default CaseStudyCard;
+export default CaseStudyAdminCard;

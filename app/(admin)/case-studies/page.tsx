@@ -6,6 +6,7 @@ export default async function CaseStudiesPage() {
 
   const caseStudies = rows.map((row) => ({
     id: row.id,
+    excerpt: row.excerpt,
     title: row.title,
     slug: row.slug,
     cover_image_url: row.coverImageUrl,
