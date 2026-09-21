@@ -227,7 +227,7 @@ const AboutMe = () => {
                   href="/case-study"
                   className="inline-flex items-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white bg-ink"
                 >
-                  See Our Work
+                  See Our Project Highlights
                 </Link>
               </motion.div>
             </div>
