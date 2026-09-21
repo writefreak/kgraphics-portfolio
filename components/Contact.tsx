@@ -7,12 +7,19 @@ import { Container } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import { submitContactForm } from "@/lib/actions/contact";
 
+function LinkedinIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M6.94 5a2 2 0 1 1-4-.002 2 2 0 0 1 4 .002zM7 8.48H3V21h4V8.48zm6.32 0H9.34V21h3.94v-6.57c0-3.66 4.77-3.96 4.77 0V21H22v-7.93c0-6.17-7.06-5.94-8.68-2.91V8.48z" />
+    </svg>
+  );
+}
 const contactLinks = [
   {
-    label: "Email",
-    value: "estheramuleya3@gmail.com",
-    href: "mailto:estheramuleya3@gmail.com",
-    icon: Mail,
+    label: "Linkedin",
+    value: "Amuleya Oluwakemisola (K-Graphics)",
+    href: "https://www.linkedin.com/in/amuleya-oluwakemisola-k-graphics-a89096327?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+    icon: LinkedinIcon,
   },
   {
     label: "Phone",
