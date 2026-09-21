@@ -37,7 +37,7 @@ export default async function CaseStudiesPage() {
         <BackButton className="mb-6" />
         {/* Header Section */}
         <div className="max-w-2xl">
-          <h1 className="mt-3 font-display text-3xl md:text-4xl font-bold tracking-tight text-ink break-words">
+          <h1 className="mt-3 font-display text-3xl md:text-4xl font-bold tracking-tight text-ink wrap-break-word">
             Explore Our Project Highlights
           </h1>
           <p className="mt-3 text-xs sm:text-sm text-neutral-600 leading-relaxed">
@@ -52,17 +52,9 @@ export default async function CaseStudiesPage() {
           </p>
         ) : (
           <>
-            {/* Case Study Hero Carousel */}
-            <div className="mt-8">
-              <CaseStudyHeroBanner caseStudies={bannerStudies} />
-            </div>
-
             {/* Case Study Cards Section Below */}
-            <div className="mt-16">
-              <h2 className="text-xl font-bold text-neutral-900 mb-6">
-                All Project Highlights
-              </h2>
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div className="pt-10 md:pt-16">
+              <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-2">
                 {caseStudies.map((study) => (
                   <CaseStudyCard key={study.id} study={study} />
                 ))}
