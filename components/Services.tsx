@@ -284,7 +284,7 @@ export default function Services() {
                       {activeService.subservices.map((sub, idx) => (
                         <span
                           key={idx}
-                          className="inline-block rounded-full bg-ink/30 px-2.5 py-1 text-[11px] font-medium text-neutral-900 tracking-wide"
+                          className="inline-block rounded-full bg-ink px-2.5 py-1 text-[11px] font-medium text-neutral-900 tracking-wide"
                         >
                           {sub}
                         </span>
