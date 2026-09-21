@@ -22,7 +22,7 @@ export function CaseStudyCard({
   study,
   className,
   description,
-  showExcerpt = false,
+  showExcerpt = true,
 }: CaseStudyCardProps) {
   return (
     <Link
@@ -50,16 +50,22 @@ export function CaseStudyCard({
 
       {/* Content Below Image */}
       <div className="flex flex-col gap-1 p-4">
-        <h2 className="font-display min-w-0 max-w-sm text-base sm:text-xl font-bold text-ink leading-snug transition-colors group-hover:text-accent">
+        <h2 className="font-display min-w-0 max-w-sm truncate line-clamp-1 text-base sm:text-lg font-bold text-ink leading-snug transition-colors group-hover:text-accent">
           {study.title}
         </h2>
 
         {showExcerpt && study.excerpt && (
-          <p className="text-xs sm:text-sm text-neutral-400 line-clamp-2 leading-relaxed">
+          <p className="text-xs sm:text-[12px] text-neutral-400 line-clamp-2 leading-relaxed">
             {study.excerpt} {description ? `|| ${description}` : ""}
           </p>
         )}
       </div>
+
+      {/* <div className="flex justify-end">
+        <div className="rounded-full h-10 w-10 border bg-ink text-white border-gray-100 flex items-center justify-center">
+          <ArrowUpRight strokeWidth={1.5} />
+        </div>
+      </div> */}
     </Link>
   );
 }
