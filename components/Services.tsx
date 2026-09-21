@@ -7,19 +7,41 @@ import { Container } from "./Container";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import Card, { CardItem } from "./ui/work-card";
 
-const SERVICES: CardItem[] = [
+type ServiceItem = CardItem & {
+  subservices?: string[];
+};
+
+const SERVICES: ServiceItem[] = [
   {
     id: "brand-strategy-identity",
     name: "Brand Strategy & Identity",
     category: "",
-    desc: "We help businesses establish a clear foundation for who they are and how they want to be perceived. Through strategic thinking and intentional visual design, we translate a brand's purpose, positioning and personality into an identity that feels distinctive, credible and consistent. From developing visual direction and logo systems to defining colour, typography and brand guidelines, every element is created to work together and give the brand a recognisable presence that can grow with it. Brand strategy, brand positioning, visual direction, logo systems, colour systems, typography, brand guidelines and identity applications.",
+    desc: "We help businesses establish a clear foundation for who they are and how they want to be perceived. Through strategic thinking and intentional visual design, we translate a brand's purpose, positioning and personality into an identity that feels distinctive, credible and consistent. From developing visual direction and logo systems to defining colour, typography and brand guidelines, every element is created to work together and give the brand a recognisable presence that can grow with it.",
+    subservices: [
+      "Brand strategy",
+      "Brand positioning",
+      "Visual direction",
+      "Logo systems",
+      "Colour systems",
+      "Typography",
+      "Brand guidelines",
+      "Identity applications",
+    ],
     image: "/IMG2.jpeg",
   },
   {
     id: "product-packaging-design",
     name: "Product Packaging Design",
     category: "",
-    desc: "We design packaging that does more than present a product. It helps communicate what the product represents, creates a memorable first impression and gives the brand a stronger presence on the shelf or in the hands of its customers. From the overall visual direction to typography, imagery, information hierarchy and supporting elements, every detail is considered to create packaging that is functional, attractive and connected to the identity of the brand. Product packaging concepts, packaging layouts, label design, box and pouch designs, visual direction and branded packaging applications.",
+    desc: "We design packaging that does more than present a product. It helps communicate what the product represents, creates a memorable first impression and gives the brand a stronger presence on the shelf or in the hands of its customers. From the overall visual direction to typography, imagery, information hierarchy and supporting elements, every detail is considered to create packaging that is functional, attractive and connected to the identity of the brand.",
+    subservices: [
+      "Product packaging concepts",
+      "Packaging layouts",
+      "Label design",
+      "Box and pouch designs",
+      "Visual direction",
+      "Branded packaging applications",
+    ],
     image: "/IMG1.jpeg",
   },
   {
@@ -27,20 +49,49 @@ const SERVICES: CardItem[] = [
     name: "Digital Product Design",
     category: "",
     desc: "We design digital products by looking beyond the interface to understand the people, problems and goals behind the product. Our approach brings together research, user flows, information architecture, wireframing and interface design to create experiences that are clear, intuitive and purposeful. From early ideas to interactive prototypes, we focus on making digital products easier to understand, navigate and use while ensuring that the final experience is visually aligned with the brand and its objectives.",
+    subservices: [
+      "Research",
+      "User flows",
+      "Information architecture",
+      "Wireframing",
+      "Interface design",
+      "Interactive prototypes",
+    ],
     image: "/IMG5.jpeg",
   },
   {
     id: "brand-communication-design",
     name: "Brand Communication Design",
     category: "",
-    desc: "We turn ideas, messages and campaigns into visual communication that is clear, compelling and aligned with the brand behind it. Whether the goal is to educate, promote, inform or inspire action, we create designs that help the message reach the audience in a way that feels intentional and engaging. Every piece is designed as part of the wider brand, ensuring that communication remains consistent while still being relevant to its purpose and platform. Campaign graphics, marketing materials, promotional designs, flyers, posters, brochures, business materials, presentation slides and branded communication assets.",
+    desc: "We turn ideas, messages and campaigns into visual communication that is clear, compelling and aligned with the brand behind it. Whether the goal is to educate, promote, inform or inspire action, we create designs that help the message reach the audience in a way that feels intentional and engaging. Every piece is designed as part of the wider brand, ensuring that communication remains consistent while still being relevant to its purpose and platform.",
+    subservices: [
+      "Campaign graphics",
+      "Marketing materials",
+      "Promotional designs",
+      "Flyers",
+      "Posters",
+      "Brochures",
+      "Business materials",
+      "Presentation slides",
+      "Branded communication assets",
+    ],
     image: "/IMG4.jpeg",
   },
   {
     id: "social-media-design",
     name: "Social Media Design",
     category: "",
-    desc: "We create social media visuals that help brands show up consistently, communicate effectively and remain recognisable in a crowded digital space. From individual promotional posts to educational carousels and complete content series, our designs are developed with the brand, audience and platform in mind. The goal is not simply to create attractive posts, but to build visual communication that supports the brand's message and encourages people to stop, understand and engage. Social media graphics, carousel designs, promotional content, educational posts, campaign visuals, announcement designs, branded templates and content series.",
+    desc: "We create social media visuals that help brands show up consistently, communicate effectively and remain recognisable in a crowded digital space. From individual promotional posts to educational carousels and complete content series, our designs are developed with the brand, audience and platform in mind. The goal is not simply to create attractive posts, but to build visual communication that supports the brand's message and encourages people to stop, understand and engage.",
+    subservices: [
+      "Social media graphics",
+      "Carousel designs",
+      "Promotional content",
+      "Educational posts",
+      "Campaign visuals",
+      "Announcement designs",
+      "Branded templates",
+      "Content series",
+    ],
     image: "/IMG3.jpeg",
   },
   {
@@ -48,6 +99,7 @@ const SERVICES: CardItem[] = [
     name: "Custom Digital Art",
     category: "Illustration",
     desc: "We render personal and passion projects with the same care as client work.",
+    subservices: [],
     image: "/2.jpg",
   },
 ];
@@ -56,7 +108,7 @@ export default function Services() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
-  const [activeService, setActiveService] = useState<CardItem | null>(null);
+  const [activeService, setActiveService] = useState<ServiceItem | null>(null);
 
   const updateEdges = () => {
     const el = trackRef.current;
@@ -117,7 +169,7 @@ export default function Services() {
         >
           <motion.h2
             variants={fadeUp}
-            className="mt-4 font-display text-3xl font-bold tracking-tight  md:w-full text-ink md:text-4xl"
+            className="mt-4 font-display text-3xl font-bold tracking-tight md:w-full text-ink md:text-4xl"
           >
             Explore Our Wide Range <br className="hidden md:block" /> of
             Creative solutions
@@ -136,7 +188,7 @@ export default function Services() {
 
       <div
         ref={trackRef}
-        className="pt-14 flex gap-4 md:gap-5 overflow-x-auto mx-6 md:mx-14 pb-2 snap-x snap-mandatory scroll-smooth scrollbar-none  [&::-webkit-scrollbar]:hidden"
+        className="pt-14 flex gap-4 md:gap-5 overflow-x-auto mx-6 md:mx-14 pb-2 snap-x snap-mandatory scroll-smooth scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
         {SERVICES.map((service) => (
           <div
@@ -225,7 +277,22 @@ export default function Services() {
                 >
                   {activeService.name}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+
+                {activeService.subservices &&
+                  activeService.subservices.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {activeService.subservices.map((sub, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-block rounded-full bg-ink/30 px-2.5 py-1 text-[11px] font-medium text-neutral-900 tracking-wide"
+                        >
+                          {sub}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                <p className="mt-4 text-sm leading-relaxed text-neutral-600">
                   {activeService.desc}
                 </p>
               </div>
