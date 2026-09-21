@@ -164,10 +164,10 @@ const AboutMe = () => {
             </div>
 
             <Link
-              href="/portfolio"
+              href="/case-study"
               className="inline-flex w-fit items-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white bg-ink"
             >
-              See Our Work
+              See Our Project Highlights
             </Link>
           </div>
 
