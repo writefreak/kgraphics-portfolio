@@ -79,7 +79,6 @@ export default async function Home() {
         {/* <WhyChooseUs /> */}
         <Services />
         <Portfolio designs={designs} />
-        <CaseStudiesCTA />
         <Reviews reviews={reviews} />
         <BrandStory />
         <FAQ />

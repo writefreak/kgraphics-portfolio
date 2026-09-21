@@ -132,20 +132,30 @@ export default function TestHero() {
 
           <motion.div
             variants={item}
-            className=" flex flex-col md:flex-row md:items-center gap-2 md:gap-4 pt-8 md:pt-10 "
+            className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 pt-8 md:pt-10"
           >
-            <a
+            <motion.a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
               className="flex gap-2 items-center md:w-52 w-[210px] md:items-center md:justify-center bg-ink text-white font-medium px-8 py-4 rounded-2xl hover:bg-blue transition-colors duration-200 text-sm"
             >
               Start a project
               <ArrowRight size={14} />
-            </a>
-            <button className="flex md:w-44 w-48 md:items-center md:justify-center border bg-white/10 backdrop-blur-md border-white/40 text-white font-medium px-8 py-4 rounded-2xl hover:border-blue hover:text-blue transition-colors duration-200 text-sm">
-              See Portfolio
-            </button>
+            </motion.a>
+
+            <motion.a
+              href="/portfolio"
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              className="flex md:w-44 w-48 items-center justify-center border bg-white/10 backdrop-blur-md border-white/40 text-white font-medium px-8 py-4 rounded-2xl hover:border-blue hover:text-blue transition-colors duration-200 text-sm"
+            >
+              See Our Work
+            </motion.a>
           </motion.div>
         </div>
       </motion.div>
