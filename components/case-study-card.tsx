@@ -26,13 +26,13 @@ export function CaseStudyCard({ study, className }: CaseStudyCardProps) {
       )}
     >
       {/* Cover Image Box */}
-      <div className="relative aspect-16/10 w-full rounded-t-2xl overflow-hidden">
+      <div className="relative aspect-16/8 p-2 w-full rounded-2xl overflow-hidden">
         {study.coverImageUrl ? (
           <img
             src={study.coverImageUrl}
             alt={study.title}
             draggable={false}
-            className="h-full w-full rounded-t-2xl object-cover transition-transform duration-500 ease-out group-hover:rounded-2xl group-hover:scale-105"
+            className="h-full w-full rounded-xl object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-xs text-neutral-600">
@@ -43,7 +43,7 @@ export function CaseStudyCard({ study, className }: CaseStudyCardProps) {
 
       {/* Content Below Image */}
       <div className="flex flex-col gap-1 p-4">
-        <h2 className="font-display text-lg sm:text-xl font-bold text-ink leading-snug transition-colors group-hover:text-accent truncate line-clamp-1">
+        <h2 className="font-display min-w-0 max-w-sm text-base sm:text-xl font-bold text-ink leading-snug transition-colors group-hover:text-accent truncate line-clamp-1">
           {study.title}
         </h2>
 

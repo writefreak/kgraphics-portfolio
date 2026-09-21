@@ -1,8 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Container } from "@/components/Container";
-import { CaseStudyCard } from "@/components/case-study-card";
-import { CaseStudyHeroBanner } from "@/components/case-study-banner";
 import BackButton from "@/components/ui/back-button";
+import CaseStudiesSearch from "@/components/case-study-search";
 
 export const revalidate = 60;
 
@@ -25,12 +24,6 @@ export default async function CaseStudiesPage() {
     ],
   });
 
-  // Pick featured items for the carousel (or default to all if none are flagged as featured)
-  const bannerStudies =
-    caseStudies.filter((s) => s.isFeatured).length > 0
-      ? caseStudies.filter((s) => s.isFeatured)
-      : caseStudies;
-
   return (
     <section className="pt-28 pb-24 md:pt-36 md:pb-32">
       <Container>
@@ -51,16 +44,9 @@ export default async function CaseStudiesPage() {
             No case studies published yet. Check back soon.
           </p>
         ) : (
-          <>
-            {/* Case Study Cards Section Below */}
-            <div className="pt-10 md:pt-16">
-              <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-2">
-                {caseStudies.map((study) => (
-                  <CaseStudyCard key={study.id} study={study} />
-                ))}
-              </div>
-            </div>
-          </>
+          <div className="mt-10 md:mt-14">
+            <CaseStudiesSearch caseStudies={caseStudies} />
+          </div>
         )}
       </Container>
     </section>
