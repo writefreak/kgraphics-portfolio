@@ -5,17 +5,17 @@ const FOOTER_COLUMNS = [
   {
     title: "Studio",
     links: [
-      { label: "About", href: "#" },
-      { label: "Portfolio", href: "#" },
-      { label: "Reviews", href: "#" },
+      { label: "About", href: "#about" },
+      { label: "Portfolio", href: "#portfolio" },
+      { label: "Reviews", href: "#reviews" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "Services", href: "#" },
-      { label: "Contact Us", href: "#" },
-      { label: "FAQs", href: "#" },
+      { label: "Services", href: "#services" },
+      { label: "Contact Us", href: "#contact" },
+      { label: "FAQs", href: "#faq" },
     ],
   },
   {
@@ -43,10 +43,10 @@ function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
+function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M14 13.5h2.5l1-4H14V7.5c0-1.03 0-2 2-2h1.5V2.14C17.17 2.1 15.95 2 14.66 2 11.97 2 10 3.66 10 6.7V9.5H7v4h3V22h4v-8.5z" />
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 1 1-5.2-1.74 2.89 2.89 0 0 1 2.31-1.42V8.9a6.34 6.34 0 1 0 6.34 6.34V9.25a8.27 8.27 0 0 0 4.84 1.55V7.35a4.85 4.85 0 0 1-1.07-.66z" />
     </svg>
   );
 }
@@ -61,19 +61,19 @@ function LinkedinIcon(props: React.SVGProps<SVGSVGElement>) {
 
 const SOCIALS = [
   {
-    label: "Instagram",
-    icon: InstagramIcon,
-    href: "#",
-  },
-  {
-    label: "Facebook",
-    icon: FacebookIcon,
-    href: "#",
-  },
-  {
     label: "LinkedIn",
     icon: LinkedinIcon,
-    href: "#",
+    href: "https://www.linkedin.com/in/amuleya-oluwakemisola-k-graphics-a89096327?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+  },
+  {
+    label: "TikTok",
+    icon: TiktokIcon,
+    href: "https://www.tiktok.com/@k_graphics001?_r=1&_t=ZS-99rRrtIwg0w",
+  },
+  {
+    label: "Instagram",
+    icon: InstagramIcon,
+    href: "https://www.instagram.com/kgraphics001?stkn=YWg2cmx4czUzNnBr&utm_source=qr",
   },
 ];
 
