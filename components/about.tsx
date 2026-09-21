@@ -224,7 +224,7 @@ const AboutMe = () => {
                 className="flex md:pt-10"
               >
                 <Link
-                  href="/portfolio"
+                  href="/case-study"
                   className="inline-flex items-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white bg-ink"
                 >
                   See Our Work

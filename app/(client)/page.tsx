@@ -13,6 +13,7 @@ import type { Design, Review } from "@/lib/types";
 import TestHero from "@/components/test-hero";
 import AboutMe from "@/components/about";
 import { FAQ } from "@/components/Faq";
+import CaseStudiesCTA from "@/components/case-study-cta";
 export const dynamic = "force-dynamic";
 
 // Assumption (unspecified): homepage carousel shows featured designs only,
@@ -78,6 +79,7 @@ export default async function Home() {
         {/* <WhyChooseUs /> */}
         <Services />
         <Portfolio designs={designs} />
+        <CaseStudiesCTA />
         <Reviews reviews={reviews} />
         <BrandStory />
         <FAQ />

@@ -37,7 +37,7 @@ export default async function CaseStudyDetailPage({
   return (
     <article className="pt-24 pb-24 md:pt-28 md:pb-32">
       <Container>
-        <BackButton className="mb-8 md:mb-12" />
+        <BackButton className="mb-8 pt-4 md:mb-12" />
 
         {/* Two-column layout: sticky left rail + scrolling right content */}
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,320px)_1fr] lg:gap-16 xl:gap-24">
@@ -55,9 +55,6 @@ export default async function CaseStudyDetailPage({
 
             {sections.length > 0 && (
               <div className="mt-8 hidden border-t border-ink/10 pt-6 lg:block">
-                <span className="text-[11px] font-semibold font-display uppercase text-ink/40">
-                  Case study highlights
-                </span>
                 <ol className="mt-3 space-y-2.5">
                   {sections.map(
                     (section, i) =>
@@ -66,7 +63,7 @@ export default async function CaseStudyDetailPage({
                           <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--blue)]/10 text-[10px] font-semibold text-[var(--blue)]">
                             {i + 1}
                           </span>
-                          <span className="text-sm leading-snug text-ink/70">
+                          <span className="text-sm leading-snug text-neutral-600">
                             {section.heading}
                           </span>
                         </li>
@@ -96,14 +93,11 @@ export default async function CaseStudyDetailPage({
                   className="border-t border-ink/10 pt-10 first:border-t-0 first:pt-0"
                 >
                   <div className="flex flex-col gap-6 md:gap-10">
-                    {/* Number + heading + body */}
-                    <div className="flex gap-4 md:w-2/5 md:shrink-0">
-                      {/* <span className="font-display text-2xl font-bold text-[var(--blue)]/30 md:text-3xl">
-                        {String(i + 1).padStart(2, "0")}
-                      </span> */}
-                      <div className="min-w-0">
+                    {/* heading + body */}
+                    <div className="flex gap-4 md:shrink-0">
+                      <div className="min-w-0 flex flex-col gap-2">
                         {section.heading && (
-                          <h2 className="font-display text-xl font-semibold text-ink md:text-2xl">
+                          <h2 className="font-display text-xl font-bold text-ink md:text-2xl">
                             {section.heading}
                           </h2>
                         )}
