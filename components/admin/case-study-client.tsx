@@ -41,7 +41,7 @@ export function CaseStudiesPageClient({
 
   return (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-4 font-sans text-ink min-h-screen">
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-ink/10 mb-6">
+      <div className="flex flex-wrap mdL items-center justify-between gap-3 pb-4 border-b border-ink/10 mb-6">
         <h1 className="font-display font-bold text-2xl sm:text-3xl text-ink tracking-tight">
           Case Studies
         </h1>

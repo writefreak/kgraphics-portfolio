@@ -164,7 +164,7 @@ const AboutMe = () => {
             </div>
 
             <Link
-              href="/case-study"
+              href="#"
               className="inline-flex w-fit items-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white bg-ink"
             >
               See Our Project Highlights
@@ -224,7 +224,7 @@ const AboutMe = () => {
                 className="flex md:pt-10"
               >
                 <Link
-                  href="/case-study"
+                  href="#"
                   className="inline-flex items-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white bg-ink"
                 >
                   See Our Project Highlights
